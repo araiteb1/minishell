@@ -1,0 +1,6 @@
+*.o
+.vscode
+.history
+.DS_Store
+*.out
+minishell
