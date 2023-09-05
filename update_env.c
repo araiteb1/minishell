@@ -6,7 +6,7 @@
 /*   By: nait-ali <nait-ali@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/03 18:33:06 by nait-ali          #+#    #+#             */
-/*   Updated: 2023/09/03 18:41:07 by nait-ali         ###   ########.fr       */
+/*   Updated: 2023/09/05 00:14:51 by nait-ali         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,8 +23,47 @@ t_environement	*creation_node_in_env(char *env, char *key, char *val)
 	node->cle = key;
 	node->valeur = val;
 	node->next = NULL;
+	// printf("key|%s|val|%s|\n",node->cle,node->valeur);
 	return (node);
 }
+
+// void	lstadd_back_environement(t_environement **list, t_environement *new)
+// {
+// 	t_environement	*node;
+// 	int flag = 0;
+// 	if (!list || !new)
+// 		return ;
+// 	node = *list;
+// 	if (node)
+// 	{
+// 		while (node->next)
+// 		{
+// 			printf(" 1111 cle ===> %s\n", node->cle);
+// 			if (strcmp(node->cle, "SHLVL") == 0)
+// 			{
+// 				printf(" 2222 cle ===> %s\n", node->cle);
+// 				flag = 1;
+// 				// printf("level: %s\n", current->valeur);
+// 				int shlval = atoi(node->valeur);
+// 				shlval++;
+// 				printf("int -->[%d]\n", shlval);
+// 				// char *new_shlvl = ft_itoa(shlval);
+// 				free(node->valeur);
+// 				node->valeur = ft_itoa(shlval);
+// 				printf("valu -->[%s]\n", node->valeur);
+// 				// printf("SHLVL incremented to %s\n", current->valeur); // Ajoutez ceci pour le débogage
+// 					break;
+// 			}
+// 			if(flag == 0)
+// 				node = node->next;
+
+// 			node->next = new;
+// 		}
+// 	}
+// 	else
+// 		*list = new;
+// }
+
 
 void	lstadd_back_environement(t_environement **list, t_environement *new)
 {

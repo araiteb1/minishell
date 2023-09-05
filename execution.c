@@ -6,7 +6,7 @@
 /*   By: nait-ali <nait-ali@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/17 04:13:02 by araiteb           #+#    #+#             */
-/*   Updated: 2023/09/03 22:28:37 by nait-ali         ###   ########.fr       */
+/*   Updated: 2023/09/04 00:14:15 by nait-ali         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,8 +35,8 @@ void	ft_dup(t_cmd *ls, char **option, char **env)
 		close (ls->filein);
 	if (ls->fileout != 1)
 		close (ls->fileout);
-	if (check_builtins(ls) == 1)
-		exit(0);
+	// if (check_builtins(ls) == 1)
+	// 	exit(0);
 	exec_chile (option, env, ls);
 }
 

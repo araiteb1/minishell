@@ -6,7 +6,7 @@
 /*   By: nait-ali <nait-ali@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/14 09:44:32 by araiteb           #+#    #+#             */
-/*   Updated: 2023/09/03 22:16:53 by nait-ali         ###   ########.fr       */
+/*   Updated: 2023/09/05 19:39:02 by nait-ali         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@
 # include <readline/history.h>
 #include <sys/wait.h>
 #include <sys/types.h>
+#include<signal.h>
 #include<stdbool.h>
 
 # define DQUOTES 0
@@ -76,9 +77,13 @@ typedef struct s_gvar
 {
 	int		exit_status;
 	t_environement	*environement;
+	char *pwd;
 }	t_gvar;
 
 extern t_gvar	an;
+
+// void increment_shlvl();
+
 /*-----function_exect_par------*/
 char		**ft_split(const char *s, char c);
 int			ft_check_fils(char *name_fd, int mode, int permession);
@@ -137,5 +142,6 @@ t_environement	*creation_node_in_env(char *env, char *key, char *val);
 void ft_export(t_cmd *cmd);
 void	ft_cd(t_cmd *cmd);
 int check_builtins(t_cmd *cmd);
+char	*ft_itoa(int n);
 
 #endif

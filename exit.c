@@ -6,7 +6,7 @@
 /*   By: nait-ali <nait-ali@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/03 18:32:33 by nait-ali          #+#    #+#             */
-/*   Updated: 2023/09/03 20:18:39 by nait-ali         ###   ########.fr       */
+/*   Updated: 2023/09/04 16:11:01 by nait-ali         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,11 +37,12 @@ int	correct_arg(char *num)
 	{
 		//khass nfree dakchi li khasso itfriya
 		an.exit_status = 0;
+		ft_putstr_fd("exit\n", 2);
 		exit(0);
 	}
 	if (n_lstsize(lst->s_substruct) > 2 )
 	{
-
+		ft_putstr_fd("exit\n", 2);
 		ft_putstr_fd("minishel: exit: too many arguments\n", 2);
 		an.exit_status = 1;
 		return ;
@@ -55,6 +56,9 @@ int	correct_arg(char *num)
 		exit (255);
 	}
 	else
+	{
+		ft_putstr_fd("exit\n", 2);
 		exit(ft_atoi((lst->s_substruct->next->data)));
+	}
 
  }

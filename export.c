@@ -150,11 +150,9 @@ void	add_val_var_env(t_environement *tmp, char *str, int i, char c)
 	if (c == '+')
 	{
 		ch = str_sans_plus(str);
-	
-		printf("------->%s\n",ch);
 		val = ft_substr(ch, i + 1, ft_strlen(str) - i - 1);
-		
 		var = ft_strjoin(tmp->valeur, val);
+		printf("%s------>>>>>|\n", var);
 		(free(tmp->valeur), free(val), free(ch), tmp->valeur = var);
 	}
 	else

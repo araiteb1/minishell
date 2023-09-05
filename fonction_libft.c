@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   fonction_libft.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
+/*   By: nait-ali <nait-ali@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/14 11:45:15 by araiteb           #+#    #+#             */
-/*   Updated: 2023/08/03 08:43:28 by araiteb          ###   ########.fr       */
+/*   Updated: 2023/09/04 02:44:55 by nait-ali         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,8 @@
 size_t	ft_strlen(const char *str)
 {
 	size_t	i;
-
+	if(!str)
+		return (0);
 	i = 0;
 	while (str[i])
 		i++;
@@ -54,8 +55,8 @@ char	*ft_strjoin(char *s1, char *s2)
 	size_t	l1;
 	size_t	l2;
 
-	if (!s1 || !s2)
-		return (NULL);
+	// if (!s1 || !s2)
+	// 	return (NULL);
 	l2 = ft_strlen(s2);
 	l1 = ft_strlen(s1);
 	new = (char *)malloc((l1 + l2 + 1) * sizeof(char));
@@ -75,6 +76,8 @@ char	*ft_strdup(const char *s)
 	int		i;
 
 	i = 0;
+	if(!s)
+		return (NULL);
 	len = ft_strlen(s);
 	tp = (char *)malloc((len + 1) * sizeof(char));
 	if (!tp)

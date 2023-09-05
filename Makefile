@@ -6,7 +6,7 @@
 #    By: nait-ali <nait-ali@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/07/14 09:44:35 by araiteb           #+#    #+#              #
-#    Updated: 2023/09/02 21:05:59 by nait-ali         ###   ########.fr        #
+#    Updated: 2023/09/05 20:47:52 by nait-ali         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -18,8 +18,8 @@ SRCS := main.c  execution2.c fonction_libft.c char_size.c ft_split.c list.c ft_s
 		cd.c unset.c export.c les_outiles.c update_env.c env.c
 OBJS := $(SRCS:.c=.o)
 EXEC := minishell
-COMP = $(shell brew --prefix readline)/lib
-LINK = $(shell brew --prefix readline)/include
+COMP = ~/.brew/opt/readline/lib
+LINK = ~/.brew/opt/readline/include
 
 all: $(EXEC)
 
