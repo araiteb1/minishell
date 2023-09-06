@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execution2.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
+/*   By: nait-ali <nait-ali@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/06 02:48:32 by araiteb           #+#    #+#             */
-/*   Updated: 2023/08/14 17:37:02 by araiteb          ###   ########.fr       */
+/*   Updated: 2023/09/02 23:05:54 by nait-ali         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,9 +26,10 @@ int	herd_rd_in(t_cmd *ls, t_substruct **cmd)
 		printf("%s\n",(*cmd)->next->data);
 		if(access((*cmd)->next->data , F_OK) == -1)
 		{
-			write(2, "minishell : ",14);
+			write(2, "minishell : ",13);
 			write(2, (*cmd)->next->data , ft_strlen((*cmd)->next->data));
-			write(2, ": No such file or directory\n", 44);
+			write(2, ": No such file or directory\n", 29);
+			an.exit_status = 1;
 			return(0);
 		}
 		else
@@ -95,7 +96,10 @@ void	ft_creat_pipe(int size, int **fds)
 	{
 		fds[i] = malloc(sizeof(int) * 2);
 		if (pipe(fds[i]) == -1)
+		{
 			write(2, "error piping\n", 14);
+			an.exit_status = 1;
+		}
 		i++;
 	}
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execution.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
+/*   By: nait-ali <nait-ali@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/17 04:13:02 by araiteb           #+#    #+#             */
-/*   Updated: 2023/08/22 23:01:14 by araiteb          ###   ########.fr       */
+/*   Updated: 2023/09/04 00:14:15 by nait-ali         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,8 @@ void	ft_dup(t_cmd *ls, char **option, char **env)
 		close (ls->filein);
 	if (ls->fileout != 1)
 		close (ls->fileout);
+	// if (check_builtins(ls) == 1)
+	// 	exit(0);
 	exec_chile (option, env, ls);
 }
 
@@ -75,6 +77,7 @@ void	exec_chile(char **option, char **env, t_cmd *list)
 	path = ft_get_path(option[0], env);
 	if (execve (path, option, env) == -1)
 	{
+		an.exit_status = 127;
 		printf("minishell: ,%s : command not found \n", option[0]);
 		exit (EXIT_FAILURE);
 	}
@@ -122,9 +125,15 @@ void	ft_execution(t_cmd *list, char **env)
 		}
 		pd[i] = fork();
 		if (pd[i] == -1)
+		{
 			write (2, "error\n", 7);
+			an.exit_status = 1;
+		}
 		if (pd[i] == 0)
 		{
+			signal(SIGINT, SIG_DFL);
+			signal(SIGQUIT, SIG_DFL);	
+			signal(SIGTSTP, SIG_DFL);
 			ft_dup (tmp, option, env);
 		}
 		if(option)
@@ -147,3 +156,4 @@ void	ft_execution(t_cmd *list, char **env)
 	if(fds)
 		ft_free_matrix(fds, ft_lstsize(list) - 1);
 }
+ // while(wait(&status) =! -1);

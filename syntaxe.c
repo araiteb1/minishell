@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   syntaxe.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
+/*   By: nait-ali <nait-ali@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/15 21:27:51 by araiteb           #+#    #+#             */
-/*   Updated: 2023/08/22 23:03:23 by araiteb          ###   ########.fr       */
+/*   Updated: 2023/09/02 23:13:55 by nait-ali         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,6 +102,7 @@ int	syntaxe_error(t_cmd *ls)
 		{
 			if (chack_status(tmps, tmp) == 1)
 			{
+				an.exit_status = 255;
 				write (2, "minishell: syntax error near", 29);
 				write(2, "unexpected token `newline'\n", 28);
 				return (0);

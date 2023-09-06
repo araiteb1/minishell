@@ -6,7 +6,7 @@
 /*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/14 09:44:32 by araiteb           #+#    #+#             */
-/*   Updated: 2023/08/22 22:43:38 by araiteb          ###   ########.fr       */
+/*   Updated: 2023/09/06 05:49:23 by araiteb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,10 @@
 # include <limits.h>
 # include <readline/readline.h>
 # include <readline/history.h>
+#include <sys/wait.h>
+#include <sys/types.h>
+#include<signal.h>
+#include<stdbool.h>
 
 # define DQUOTES 0
 # define SQUOTE 1
@@ -60,6 +64,30 @@ typedef struct s_cmd{
 	struct s_cmd	*next;
 	struct s_cmd	*prev;
 }	t_cmd;
+typedef struct s_expand{
+	
+	int flag;
+	char 	*res;
+	char 	*tmp;
+} t_expand;
+typedef struct s_environement
+{
+	char			*env;
+	char			*cle;
+	char			*valeur;
+	struct s_environement	*next;
+}	t_environement;
+
+typedef struct s_gvar
+{
+	int		exit_status;
+	t_environement	*environement;
+	char *pwd;
+}	t_gvar;
+
+extern t_gvar	an;
+
+// void increment_shlvl();
 
 /*-----function_exect_par------*/
 char		**ft_split(const char *s, char c);
@@ -100,5 +128,25 @@ void		ft_close_pipe(t_cmd *ls, int **fds);
 void		ft_free_matrix(int **str, int size);
 void		ft_creat_pipe(int size, int **fds);
 int		get_rd(t_substruct **cmd, t_cmd *ls, int **fds);
-
+int		find_equal(char *s, char c);
+void	ft_unset(t_cmd *cmd);
+t_environement	*create_env(char **tab);
+void  ft_cd(t_cmd *cmd);
+void	ft_echo(t_cmd *ls);
+void	ft_env(t_cmd *cmd);
+void ft_exit(t_cmd *lst);
+int	ft_strcmp(char *s1, char *s2);
+void	ft_putstr_fd(char *s, int fd);
+int	ft_atoi(const char *str);
+char	*ft_strchr(const char *s, int c);
+void ft_pwd();
+void	ft_unset(t_cmd *cmd);
+void	free_environement(void);
+void	lstadd_back_environement(t_environement **lst, t_environement *new);
+t_environement	*creation_node_in_env(char *env, char *key, char *val);
+void ft_export(t_cmd *cmd);
+void	ft_cd(t_cmd *cmd);
+int check_builtins(t_cmd *cmd);
+char	*ft_itoa(int n);
+char    *expand_ret(char *line, char **env);
 #endif

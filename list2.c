@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   list2.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
+/*   By: nait-ali <nait-ali@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/06 02:51:57 by araiteb           #+#    #+#             */
-/*   Updated: 2023/08/22 23:07:41 by araiteb          ###   ########.fr       */
+/*   Updated: 2023/09/02 23:11:14 by nait-ali         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,9 +66,16 @@ t_cmd	*ft_lstnew(char *cmd)
 			if(ft_strlen(str) > 2 || ft_strlen(str) < 1)
 			{
 				if(str[0] == '>' && str[1] == '>')
+				{
+					an.exit_status = 255;
 					write(2, "minishell: syntax error near unexpected token `>>'\n", 52);
+				}
 				if(str[0] == '<' && str[1] == '<')
+				{
+					an.exit_status = 255;
 					write(2, "minishell: syntax error near unexpected token `<<'\n", 52);
+
+				}
 				return NULL;
 			}
 		}
