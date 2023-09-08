@@ -6,7 +6,7 @@
 /*   By: nait-ali <nait-ali@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/15 21:27:51 by araiteb           #+#    #+#             */
-/*   Updated: 2023/09/02 23:13:55 by nait-ali         ###   ########.fr       */
+/*   Updated: 2023/09/08 21:32:48 by nait-ali         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,7 +102,7 @@ int	syntaxe_error(t_cmd *ls)
 		{
 			if (chack_status(tmps, tmp) == 1)
 			{
-				an.exit_status = 255;
+				an.exit_status = 258;
 				write (2, "minishell: syntax error near", 29);
 				write(2, "unexpected token `newline'\n", 28);
 				return (0);

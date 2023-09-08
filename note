@@ -1,0 +1,40 @@
+
+
+
+
+ls >1 | wc     ''''' khas redirection tghlb ela l pipe
+
+echo "     " spaces should not be skipped
+
+don t forget to close unused file descriptors ===  f redirections matalan
+a>b>C>D L A wl b w c w d khas ytclosaw
+
+wflcas dlpipes ls > a | wc   khas fd[1] tclosa since l output atkun f l a ext...
+
+
+command to test file descriptors leaks :::
+
+lsof -p "process id" | wc -l
+
+process id = execute ps command and find the number linked to your minishell
+
+
+ila bda l program dyalk b 8 matalan khas yb9a 8
+
+example = while true; do lsof -p   7061 | wc -l; done
+
+
+
+cd --- PWD f export
+
+unset bash: unset: `1': not a valid identifier check for variable name
+
+export a+= "" instead of " "
+export +=
+'ls "ls errors
+pwd PWD OLDPWD
+bash-3.2$ mkdir -p 1/2/3/4     
+bash-3.2$ cd 1/2/3/4/          
+bash-3.2$ rm -rf ../../../../1/
+ exit 5645645645645646545645646546546 / don't forget return value % 256
+ exit 1 2 0 545 545 

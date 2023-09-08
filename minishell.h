@@ -6,7 +6,7 @@
 /*   By: nait-ali <nait-ali@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/14 09:44:32 by araiteb           #+#    #+#             */
-/*   Updated: 2023/09/05 19:39:02 by nait-ali         ###   ########.fr       */
+/*   Updated: 2023/09/08 02:40:07 by nait-ali         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,6 +78,8 @@ typedef struct s_gvar
 	int		exit_status;
 	t_environement	*environement;
 	char *pwd;
+	int flag_signal;
+	int flag_herdoc;
 }	t_gvar;
 
 extern t_gvar	an;
@@ -85,6 +87,9 @@ extern t_gvar	an;
 // void increment_shlvl();
 
 /*-----function_exect_par------*/
+
+void sigint_herdoc(int sig);
+int	here_doc(char *tmps, char *end);
 char		**ft_split(const char *s, char c);
 int			ft_check_fils(char *name_fd, int mode, int permession);
 int			ft_strncmp(const char *s1, const char *s2, size_t n);
@@ -134,7 +139,7 @@ int	ft_strcmp(char *s1, char *s2);
 void	ft_putstr_fd(char *s, int fd);
 int	ft_atoi(const char *str);
 char	*ft_strchr(const char *s, int c);
-void ft_pwd();
+void ft_pwd(t_cmd *cmd);
 void	ft_unset(t_cmd *cmd);
 void	free_environement(void);
 void	lstadd_back_environement(t_environement **lst, t_environement *new);
@@ -143,5 +148,7 @@ void ft_export(t_cmd *cmd);
 void	ft_cd(t_cmd *cmd);
 int check_builtins(t_cmd *cmd);
 char	*ft_itoa(int n);
+
+
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: nait-ali <nait-ali@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/17 04:13:02 by araiteb           #+#    #+#             */
-/*   Updated: 2023/09/04 00:14:15 by nait-ali         ###   ########.fr       */
+/*   Updated: 2023/09/08 19:00:45 by nait-ali         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,17 +26,33 @@ int	get_ev(char **env)
 	return (i);
 }
 
+void handel_quit_for_child(int sig)
+{
+	(void) sig;
+	// if(!an.flag_signal)
+	// 	return ;
+	printf("\\Quit: 3\n");
+	//an.exit_status = 131; l9itha flbash
+
+}
+
 
 void	ft_dup(t_cmd *ls, char **option, char **env)
 {
+
 	dup2 (ls->filein, 0);
 	dup2 (ls->fileout, 1);
 	if(ls->filein != 0)
 		close (ls->filein);
 	if (ls->fileout != 1)
 		close (ls->fileout);
-	// if (check_builtins(ls) == 1)
-	// 	exit(0);
+	// int i = 0;
+	// while (option[i])
+	// 	ft_putstr_fd(option[i++], 2);
+	ls->filein = 0;
+	ls->fileout = 1;
+	if (check_builtins(ls) == 1)
+		exit(0);
 	exec_chile (option, env, ls);
 }
 
@@ -87,27 +103,30 @@ void	ft_execution(t_cmd *list, char **env)
 {
 	t_cmd		*tmp;
 	t_substruct	*tmps;
-	char		**option;
-	int			**fds;
-	pid_t		*pd;
+	char		**option;//execve(path, optin, env);
+	int			**fds;//pipe
+	pid_t		*pd;//fork();
 	int			i;
 	tmp = list;
 	i = 0;
 
-	fds = (int **)malloc(sizeof(int *) * ft_lstsize(list));
+
+	fds = (int **)malloc(sizeof(int *) * ft_lstsize(list) - 1);
 	pd = (int *)malloc(sizeof(int) * (ft_lstsize(list)));
 	ft_creat_pipe(ft_lstsize(list), fds);
 	while (tmp && i < ft_lstsize(list))
-	{
+	{ 
 		option = NULL;
 		tmps = tmp->s_substruct;
 		while (tmps)
 		{
+			
 			if (tmps->type != word)
 				tmps = tmps->next->next;
 			if (tmps && tmps->type == word)
 			{
-				option = __resize(option, tmps->data);
+				// printf(" word :%s   \n", tmps->data);
+				option = __resize(option, tmps->data);// ls -la
 				tmps = tmps->next;
 			}
 		}
@@ -118,11 +137,17 @@ void	ft_execution(t_cmd *list, char **env)
 				tmps = tmps->next;
 			if ((tmps && !tmps->prev) || tmps->type != word)
 			{
+				// printf(" dekhlat hna 1 :\n");
 				if(!get_rd(&tmps, tmp, fds))
 					return ;
 			}
 			tmps = tmps->next;
 		}
+		an.flag_signal = 1;
+		if (!tmp->prev && !tmp->next && check_builtins(tmp))
+			return ;
+		signal(SIGINT,SIG_IGN);
+		signal(SIGQUIT,handel_quit_for_child);
 		pd[i] = fork();
 		if (pd[i] == -1)
 		{
@@ -131,9 +156,7 @@ void	ft_execution(t_cmd *list, char **env)
 		}
 		if (pd[i] == 0)
 		{
-			signal(SIGINT, SIG_DFL);
-			signal(SIGQUIT, SIG_DFL);	
-			signal(SIGTSTP, SIG_DFL);
+			signal(SIGINT,SIG_DFL);
 			ft_dup (tmp, option, env);
 		}
 		if(option)
@@ -147,12 +170,17 @@ void	ft_execution(t_cmd *list, char **env)
 		i++;
 	}
 	i = 0;
+		int status;
 	while (i < ft_lstsize(list))
 	{
-		int status;
 		waitpid(pd[i], &status, 0);
 		i++;
     }
+	// if (WIFEXITED(status))
+	// 	an.exit_status = status;
+	// else if (WIFSIGNALED(status))
+	// 	an.exit_status = 128 + status;
+	printf("%d\n", an.exit_status);
 	if(fds)
 		ft_free_matrix(fds, ft_lstsize(list) - 1);
 }

@@ -6,7 +6,7 @@
 /*   By: nait-ali <nait-ali@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/03 18:32:33 by nait-ali          #+#    #+#             */
-/*   Updated: 2023/09/04 16:11:01 by nait-ali         ###   ########.fr       */
+/*   Updated: 2023/09/08 21:25:34 by nait-ali         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,11 +36,21 @@ int	correct_arg(char *num)
 	if (lst->s_substruct && !lst->s_substruct->next)
 	{
 		//khass nfree dakchi li khasso itfriya
-		an.exit_status = 0;
 		ft_putstr_fd("exit\n", 2);
+		an.exit_status = 0;
 		exit(0);
 	}
-	if (n_lstsize(lst->s_substruct) > 2 )
+
+	else if(!correct_arg(lst->s_substruct->data))
+	{
+		ft_putstr_fd("exit \n", 2);
+		ft_putstr_fd("minishell : exit: numeric argument required\n", 2);
+		an.exit_status = 255;
+		exit (255);
+
+	}
+
+	else if (n_lstsize(lst->s_substruct) > 2)
 	{
 		ft_putstr_fd("exit\n", 2);
 		ft_putstr_fd("minishel: exit: too many arguments\n", 2);
@@ -48,7 +58,7 @@ int	correct_arg(char *num)
 		return ;
 	}
 
-	if (n_lstsize(lst->s_substruct) == 2 && !correct_arg(lst->s_substruct->next->data))
+	else if (n_lstsize(lst->s_substruct) == 2 && !correct_arg(lst->s_substruct->next->data))
 	{
 		ft_putstr_fd("exit \n", 2);
 		ft_putstr_fd("minishell : exit: numeric argument required\n", 2);

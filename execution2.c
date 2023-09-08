@@ -6,7 +6,7 @@
 /*   By: nait-ali <nait-ali@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/06 02:48:32 by araiteb           #+#    #+#             */
-/*   Updated: 2023/09/02 23:05:54 by nait-ali         ###   ########.fr       */
+/*   Updated: 2023/09/08 15:31:23 by nait-ali         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,14 +16,16 @@ int	herd_rd_in(t_cmd *ls, t_substruct **cmd)
 {
 	if ((*cmd)->type == heredoc)
 	{
+		// printf (" ---------->  dekhlat hna \n");
+		// signal(SIGINT,sigint_herdoc);
+		
 		if((*cmd)->next)
 			(*cmd) = (*cmd)->next;
-		ls->filein = here_doc("tmp", (*cmd)->data);
+		here_doc("/tmp/an", (*cmd)->data);
 		ls->filein = open("tmp", O_RDONLY, 0644);
 	}
 	else
 	{
-		printf("%s\n",(*cmd)->next->data);
 		if(access((*cmd)->next->data , F_OK) == -1)
 		{
 			write(2, "minishell : ",13);
@@ -42,11 +44,11 @@ int	get_rd(t_substruct **cmd, t_cmd *ls, int **fds)
 {
 	if ((*cmd)->type == heredoc || (*cmd)->type == rd_input)
 	{
-		if(!herd_rd_in(ls, cmd))
+		// printf(" dekhlat hna 1 :\n");
+		if(!herd_rd_in(ls, cmd) || an.flag_herdoc == 1)
 			return(0);
-		
 	}
-	else if (ls && ls->prev)
+	else if (ls && ls->prev) //ls  | cat "piping"
 		ls->filein = fds[ls->i - 1][0];
 	if (((*cmd) && (*cmd)->type == rd_output)
 		|| ((*cmd) && (*cmd)->type == rd_output_append))
@@ -54,16 +56,18 @@ int	get_rd(t_substruct **cmd, t_cmd *ls, int **fds)
 		if ((*cmd)->type == rd_output)
 		{
 			ls->fileout = ft_check_fils((*cmd)->next->data,
-					(O_RDWR | O_CREAT | O_TRUNC), 0644);
+					(O_RDWR | O_CREAT | O_TRUNC), 0644);//ls > file
 		}
 		else
+		{
 			ls->fileout = ft_check_fils((*cmd)->next->data,
 					(O_RDWR | O_CREAT | O_APPEND), 0644);
+		}
 		(*cmd) = (*cmd)->next;
 	}
 	if (ls && ls->next)
 	{
-		ls->fileout = fds[ls->i][1];
+		ls->fileout = fds[ls->i][1]; //piping "ls | cat"===> ls write in fd[1](cat)
 	}
 	return(1);
 }

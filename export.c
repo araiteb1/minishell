@@ -9,7 +9,6 @@
 /*   Updated: 2023/09/03 18:32:37 by nait-ali         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
 #include "minishell.h"
 
 
@@ -18,7 +17,7 @@ static	t_environement	*env_copie(t_environement	*env)
 	t_environement	*tmp;
 
 	tmp = NULL;
-	while (env)
+	while (env )
 	{
 		lstadd_back_environement(&tmp, creation_node_in_env
 			(env->env, env->cle, env->valeur));
@@ -69,7 +68,7 @@ void	free_env_copie(t_environement *env)
 	an.exit_status = 0;
 }
 
-static	void	print_environement(void)
+static	void	print_environement(t_cmd *ls)
 {
 	t_environement	*env;
 	t_environement	*var;
@@ -80,16 +79,19 @@ static	void	print_environement(void)
 	tmp = env;
 	while (env)
 	{
-		ft_putstr_fd("declare -x ", 1);
-		ft_putstr_fd(env->cle, 1);
+		ft_putstr_fd("declare -x ", ls->fileout);
+		// if(!ft_strcmp(env->cle, "PWD") && env->cle)
+		ft_putstr_fd(env->cle, ls->fileout);
 		if (find_equal(env->env, '=') != -1)
 		{
-			ft_putstr_fd("=\"", 1);
-			ft_putstr_fd(env->valeur, 1);
-			ft_putstr_fd("\"", 1);
+			// if(!ft_strcmp(env->cle, "PWD"))
+			// 	printf("%s------->:\n", env->valeur);
+			ft_putstr_fd("=\"", ls->fileout);
+			ft_putstr_fd(env->valeur, ls->fileout);
+			ft_putstr_fd("\"", ls->fileout);
 		}
 		
-		ft_putstr_fd("\n", 1);
+		ft_putstr_fd("\n", ls->fileout);
 		env = env->next;
 	}
 	while (tmp)
@@ -123,6 +125,9 @@ char	*str_sans_plus(char *str)
 
 void	export_new_var_in_env(char *str, char *var, char c, ssize_t index)
 {
+	char *tmp;
+
+
 	if (c == '=')
 		lstadd_back_environement(&an.environement, creation_node_in_env(ft_strdup(str),
 				var, ft_substr(str, index + 1,
@@ -131,9 +136,11 @@ void	export_new_var_in_env(char *str, char *var, char c, ssize_t index)
 	{
 		
 		str = str_sans_plus(str);
+		tmp = ft_substr(str, index + 1,ft_strlen(str) - index);
+		if (ft_strlen(tmp)== 1)
+			tmp = "";
 		lstadd_back_environement(&an.environement, creation_node_in_env(str,
-				var, ft_substr(str, index + 1,
-					ft_strlen(str) - index)));
+				var, tmp));
 	}
 	else
 		(lstadd_back_environement(&an.environement,
@@ -152,7 +159,7 @@ void	add_val_var_env(t_environement *tmp, char *str, int i, char c)
 		ch = str_sans_plus(str);
 		val = ft_substr(ch, i + 1, ft_strlen(str) - i - 1);
 		var = ft_strjoin(tmp->valeur, val);
-		printf("%s------>>>>>|\n", var);
+		// printf("%s------>>>>>|\n", var);
 		(free(tmp->valeur), free(val), free(ch), tmp->valeur = var);
 	}
 	else
@@ -198,6 +205,7 @@ void	export_variables(char *str, char c)
 	{
 		i = find_equal(str, c);
 		var = ft_substr(str, 0, i);
+		// printf("%s-------->>>:",var);
 	}
 	else
 		var = ft_strdup(str);
@@ -215,7 +223,7 @@ void ft_export(t_cmd *cmd)
 
 	varr = cmd->s_substruct->next;
     if(!varr)
-        print_environement();
+        print_environement(cmd);
 	else
 	{
 			while (varr)
@@ -232,10 +240,11 @@ void ft_export(t_cmd *cmd)
 					|| (*var >= '0' && *var <= '9') || *var == '_'))
 					var++;
 				if (!i || (!(*var == '+' && *(var + 1) == '=') && *var != '=' && *var))
-					(ft_putstr_fd("-minishell: export: ",2),ft_putstr_fd(varr->data, 2),ft_putstr_fd(" not a valid identifier\n",2),an.exit_status = 1);
+					(ft_putstr_fd("minishell: export: `",2),ft_putstr_fd(varr->data, 2),ft_putstr_fd("': not a valid identifier\n",2),an.exit_status = 1);
 					
 				export_variables(varr->data, *var);
 				varr = varr->next;
 			}
 	}
+	an.exit_status=0;
 }

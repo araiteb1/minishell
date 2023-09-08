@@ -6,7 +6,7 @@
 /*   By: nait-ali <nait-ali@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/03 18:32:22 by nait-ali          #+#    #+#             */
-/*   Updated: 2023/09/04 22:58:54 by nait-ali         ###   ########.fr       */
+/*   Updated: 2023/09/08 14:53:46 by nait-ali         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,26 +39,21 @@ void	ft_echo(t_cmd *ls)
 	var = 0;
 
 	cmd = ls->s_substruct->next; 
-	// if (cmd->data == (void *) 0)
-	// {
-	// 	printf("    ->%s\n",cmd->data);
-	// 	cmd = cmd->next;
-	// }
-	printf("    ->%d\n",n_lstsize(ls->s_substruct));
     while (cmd && check_new_line(cmd->data) && ls->s_substruct->next)
 	{
 		var = 1;
        	cmd = cmd->next;
 	}
-	while (cmd)
+	while (cmd && (cmd->data[0] != '<' && cmd->data[0] != '>'))
 	{
-		ft_putstr_fd(cmd->data, 1);
+	// printf("   %s------>:\n", cmd->data);
+		ft_putstr_fd(cmd->data, ls->fileout);
 		cmd = cmd->next;
 		if (cmd)
-			write(1, " ", 1);
+			write(ls->fileout, " ", 1);
 	}
 
 	if (!var)
-		write(1, "\n", 1);
+		write(ls->fileout, "\n", 1);
 	an.exit_status = 0;
 }

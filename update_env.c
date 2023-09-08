@@ -6,7 +6,7 @@
 /*   By: nait-ali <nait-ali@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/03 18:33:06 by nait-ali          #+#    #+#             */
-/*   Updated: 2023/09/05 00:14:51 by nait-ali         ###   ########.fr       */
+/*   Updated: 2023/09/08 19:49:23 by nait-ali         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,15 +15,16 @@
 t_environement	*creation_node_in_env(char *env, char *key, char *val)
 {
 	t_environement	*node;
+	// char *tmp;
 
 	node = malloc(sizeof(t_environement));
 	if (!node)
 		return(perror(""), NULL);
+	// tmp = ft_strjoin(key,"=");
 	node->env = env;
 	node->cle = key;
 	node->valeur = val;
 	node->next = NULL;
-	// printf("key|%s|val|%s|\n",node->cle,node->valeur);
 	return (node);
 }
 

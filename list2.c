@@ -6,7 +6,7 @@
 /*   By: nait-ali <nait-ali@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/06 02:51:57 by araiteb           #+#    #+#             */
-/*   Updated: 2023/09/02 23:11:14 by nait-ali         ###   ########.fr       */
+/*   Updated: 2023/09/06 18:20:12 by nait-ali         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,31 +48,19 @@ t_cmd	*ft_lstnew(char *cmd)
 	new = subc_quots(cmd);
 	while (new[i])
 	{
-		if (new[i] == '\'')
-		{
-			i++;
-			str = get_quotes(new, &i, SQUOTE);
-			i++;
-		}
-		else if (new[i] == '"')
-		{
-			i++;
-			str = get_quotes(new, &i, DQUOTES);
-			i++;
-		}
-		else if (new[i] == '>' || new[i] == '<')
+		if (new[i] == '>' || new[i] == '<')
 		{
 			str = get_redirection(new, &i);
 			if(ft_strlen(str) > 2 || ft_strlen(str) < 1)
 			{
 				if(str[0] == '>' && str[1] == '>')
 				{
-					an.exit_status = 255;
+					an.exit_status = 258;
 					write(2, "minishell: syntax error near unexpected token `>>'\n", 52);
 				}
 				if(str[0] == '<' && str[1] == '<')
 				{
-					an.exit_status = 255;
+					an.exit_status = 258;
 					write(2, "minishell: syntax error near unexpected token `<<'\n", 52);
 
 				}

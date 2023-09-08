@@ -6,7 +6,7 @@
 /*   By: nait-ali <nait-ali@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/19 22:34:27 by araiteb           #+#    #+#             */
-/*   Updated: 2023/09/02 23:08:02 by nait-ali         ###   ########.fr       */
+/*   Updated: 2023/09/06 23:32:38 by nait-ali         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,8 +31,6 @@ int	ft_check_fils(char *name_fd, int mode, int permession)
 				{
 					an.exit_status = 1;
 					perror("open");
-
-					
 				}
 			}
 		}
