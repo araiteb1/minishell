@@ -6,7 +6,7 @@
 /*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/14 11:45:15 by araiteb           #+#    #+#             */
-/*   Updated: 2023/09/05 22:20:21 by araiteb          ###   ########.fr       */
+/*   Updated: 2023/09/07 22:17:18 by araiteb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,9 +54,12 @@ char	*ft_strjoin(char *s1, char *s2)
 	char	*new;
 	size_t	l1;
 	size_t	l2;
-
+	
+	if(!s1)
+		l1 = 0;
+	else
+		l1 = ft_strlen(s1);
 	l2 = ft_strlen(s2);
-	l1 = ft_strlen(s1);
 	new = (char *)malloc((l1 + l2 + 1) * sizeof(char));
 	if (!new)
 		return (0);

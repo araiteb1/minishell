@@ -6,7 +6,7 @@
 /*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/14 09:44:32 by araiteb           #+#    #+#             */
-/*   Updated: 2023/09/06 05:49:23 by araiteb          ###   ########.fr       */
+/*   Updated: 2023/09/08 21:36:35 by araiteb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,7 +101,7 @@ char		*ft_strdup(const char *s);
 char		*ft_substr(const char *s, unsigned int start, size_t len);
 void		print_cmds(t_cmd *ls);
 int			syntaxe_error(t_cmd *ls);
-t_cmd		*ft_lstnew(char *cmd);
+t_cmd		*ft_lstnew(char *cmd, char **env);
 int			ft_lstsize(t_cmd *lst);
 t_cmd		*ft_lstlast(t_cmd *lst);
 void		ft_lstadd_back(t_cmd **lst, t_cmd *new);
@@ -147,6 +147,7 @@ t_environement	*creation_node_in_env(char *env, char *key, char *val);
 void ft_export(t_cmd *cmd);
 void	ft_cd(t_cmd *cmd);
 int check_builtins(t_cmd *cmd);
+char 	*subc_quots(char *str);
 char	*ft_itoa(int n);
 char    *expand_ret(char *line, char **env);
 #endif

@@ -6,7 +6,7 @@
 /*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/14 09:44:28 by araiteb           #+#    #+#             */
-/*   Updated: 2023/09/06 07:53:16 by araiteb          ###   ########.fr       */
+/*   Updated: 2023/09/07 01:28:12 by araiteb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ void    print_cmds(t_cmd *ls)
     }
 }
 
-int	get_cmds(char *line, t_cmd **list)
+int	get_cmds(char *line, t_cmd **list, char **env)
 {
 	char	**str;
 	t_cmd 	*new;
@@ -65,7 +65,7 @@ int	get_cmds(char *line, t_cmd **list)
 	i = 0;
 	while (str[i])
 	{
-		new = ft_lstnew(ft_strtrim(str[i], " \t"));
+		new = ft_lstnew(ft_strtrim(str[i], " \t"), env);
 		if(!new)
 			return(0);
 		ft_lstadd_back(list, new);
@@ -244,7 +244,7 @@ int	main(int ac, char **av, char **env)
 	{
 		rl_catch_signals = 0;
 		
-		line = expand_ret(readline("minishell:$ "), env);
+		line = readline("minishell:$ ");
 		if (!line)
 		{
 			write(1,"exit\n", 5);
@@ -253,10 +253,9 @@ int	main(int ac, char **av, char **env)
 		if (line[0] != '\0')
 		{
 			add_history(line);
-			if (get_cmds(line, &list) && syntaxe_error(list))
+			if (get_cmds(line, &list, env) && syntaxe_error(list))
 			{
-				if (!check_builtins(list))
-					ft_execution(list, get_env_values(an.environement));
+				ft_execution(list, get_env_values(an.environement));
 			}
 			if (line)
 			{

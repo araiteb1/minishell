@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   list2.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nait-ali <nait-ali@student.42.fr>          +#+  +:+       +#+        */
+/*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/06 02:51:57 by araiteb           #+#    #+#             */
-/*   Updated: 2023/09/02 23:11:14 by nait-ali         ###   ########.fr       */
+/*   Updated: 2023/09/09 03:35:47 by araiteb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,8 @@ char 	*subc_quots(char *str)
 	char *ret;
 	
 	i = 0;
-	j = 0;
 	ret = malloc(sizeof(char) * ft_strlen(str));
+	j = 0;
 	while(str[i])
 	{
 		if(str[i] != '\'' && str[i] != '"')
@@ -30,39 +30,41 @@ char 	*subc_quots(char *str)
 		i++;
 	}
 	ret[j] = '\0';
+	printf("||||   %s\n", ret);
 	return(ret);
 }
 
-t_cmd	*ft_lstnew(char *cmd)
+t_cmd	*ft_lstnew(char *cmd, char **env)
 {
 	t_cmd	*l;
 	char	*str = NULL;
-	char *new;
+	// char *new = NULL;
 	int		i;
-
+(void)env;
 	l = malloc(sizeof(t_cmd));
 	l->s_substruct = NULL;
 	if (!l)
 		return (NULL);
 	i = 0;
-	new = subc_quots(cmd);
-	while (new[i])
+	// new = expand_ret(cmd, env);
+	// printf("new ==> %s\n", new);
+	while (cmd[i])
 	{
-		if (new[i] == '\'')
+		if (cmd[i] == '\'')
 		{
 			i++;
-			str = get_quotes(new, &i, SQUOTE);
+			str = get_quotes(cmd, &i, SQUOTE);
 			i++;
 		}
-		else if (new[i] == '"')
+		else if (cmd[i] == '"')
 		{
 			i++;
-			str = get_quotes(new, &i, DQUOTES);
+			str = get_quotes(cmd, &i, DQUOTES);
 			i++;
 		}
-		else if (new[i] == '>' || new[i] == '<')
+		else if (cmd[i] == '>' || cmd[i] == '<')
 		{
-			str = get_redirection(new, &i);
+			str = get_redirection(cmd, &i);
 			if(ft_strlen(str) > 2 || ft_strlen(str) < 1)
 			{
 				if(str[0] == '>' && str[1] == '>')
@@ -80,12 +82,13 @@ t_cmd	*ft_lstnew(char *cmd)
 			}
 		}
 		else
-			str = get_command(new, &i);
+			str = get_command(cmd, &i);
 		if(str)
 		{
-			n_lstadd_back(&(l->s_substruct), n_lstnew(ft_strtrim(str, " \t")));
+			// printf("str <========> %s\n", str);
+			n_lstadd_back(&(l->s_substruct), n_lstnew(str));
 		}
-		while (new[i] == ' ')
+		while (cmd[i] == ' ')
 			i++;
 	}
 	l->data = cmd;

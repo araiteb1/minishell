@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execution.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nait-ali <nait-ali@student.42.fr>          +#+  +:+       +#+        */
+/*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/17 04:13:02 by araiteb           #+#    #+#             */
-/*   Updated: 2023/09/04 00:14:15 by nait-ali         ###   ########.fr       */
+/*   Updated: 2023/09/09 03:31:50 by araiteb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,8 +35,8 @@ void	ft_dup(t_cmd *ls, char **option, char **env)
 		close (ls->filein);
 	if (ls->fileout != 1)
 		close (ls->fileout);
-	// if (check_builtins(ls) == 1)
-	// 	exit(0);
+	if (check_builtins(ls) == 1)
+		exit(0);
 	exec_chile (option, env, ls);
 }
 
@@ -82,15 +82,115 @@ void	exec_chile(char **option, char **env, t_cmd *list)
 		exit (EXIT_FAILURE);
 	}
 }
+int 	check_doll(char *str)
+{
+	int i = 0;
 
+	while(str[i])
+	{
+		if(str[i] == '$')
+			return(1);
+		i++;
+	}
+	return(0);
+}
+char    *option_expand(char *line)
+{
+    int i;
+	int j;
+    int size = 0;
+	char 	*str = NULL;
+    char *ret =  NULL;
+	char *ret1= NULL;
+	char *value = NULL;
+	int start;
+
+	i = 0;
+	while(line[i])
+	{
+    	start = i;
+		size = 0;
+		while(line[i] && line[i] != '$')
+		{
+			size++;
+			i++;
+		}
+		ret = ft_substr(line, start, size);
+		if(ret && !check_doll(ret))
+		{
+			j=0;
+			if (ret[j] == '\'')
+			{
+				j++;
+				ret1 = get_quotes(ret, &j, SQUOTE);
+				j++;
+			}
+			else if (ret[j] == '"')
+			{
+				j++;
+				ret1 = get_quotes(ret, &j, DQUOTES);
+				j++;
+			}
+			else
+				ret1 = ft_strdup(ret);
+			value = getenv((ret1));
+			if(ret1  && value)
+			{
+				value = getenv((ret1));
+				free(ret1);
+				ret1 = ft_strdup(value);
+			}
+			str = ft_strjoin(str, ret1);
+		}
+		if (line[i] && line[i] == '$')
+			i++;
+	}
+    return(str);
+}
+
+int expand_env_variable(char **option, char **env)
+{
+	(void)env;
+	char *str=ft_strdup("");
+	int i = 0;
+	int j;
+	while (option[i])
+	{
+		str = ft_strdup(option[i]);
+		j = 0;
+		if (check_doll(str))
+		{
+			option[i] = option_expand(str);
+			printf("option %s\n", option[i]);
+			return(1);
+		}
+		i++;
+	}
+	return(0);
+}
+
+void 	option_cmd_quots(char **option)
+{
+	int i = 0;
+	char *str = NULL;
+	char *new = NULL;
+	while(option[i])
+	{
+		str = ft_strdup(option[i]);
+		new = subc_quots(str);
+		option[i] = new;
+		i++;
+	}
+}
 void	ft_execution(t_cmd *list, char **env)
 {
-	t_cmd		*tmp;
+	t_cmd		*tmp; 
 	t_substruct	*tmps;
 	char		**option;
 	int			**fds;
 	pid_t		*pd;
 	int			i;
+	int 	flag = 0;
 	tmp = list;
 	i = 0;
 
@@ -123,6 +223,9 @@ void	ft_execution(t_cmd *list, char **env)
 			}
 			tmps = tmps->next;
 		}
+		flag = expand_env_variable(option, env);
+		if(!flag)
+			option_cmd_quots(option);
 		pd[i] = fork();
 		if (pd[i] == -1)
 		{
@@ -131,9 +234,6 @@ void	ft_execution(t_cmd *list, char **env)
 		}
 		if (pd[i] == 0)
 		{
-			signal(SIGINT, SIG_DFL);
-			signal(SIGQUIT, SIG_DFL);	
-			signal(SIGTSTP, SIG_DFL);
 			ft_dup (tmp, option, env);
 		}
 		if(option)

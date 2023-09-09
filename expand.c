@@ -6,7 +6,7 @@
 /*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/05 22:23:53 by araiteb           #+#    #+#             */
-/*   Updated: 2023/09/06 07:51:53 by araiteb          ###   ########.fr       */
+/*   Updated: 2023/09/07 23:25:52 by araiteb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,21 +35,7 @@ int     ft_size_nam(char *str, char c)
         i++;
     return(i);
 }
-char    *var_expand(char *line, int *start)
-{
-    int i;
-    int size=0;
-    char *ret;
 
-    i = (*start);
-    while(line[*start] && line[*start] != ' ' && line[*start] != '$')
-    {
-        size++;
-        (*start)++;
-    }
-    ret = ft_substr(line, i, size);
-    return(ret);
-}
 char    *ret_expand_val(char *str, char **env)
 {
     int i = 0;
@@ -81,22 +67,23 @@ char    *expand_ret(char *line, char **env)
     while(line[i])
     {
         size = 0;
-        while(line[i] != '$')
+        if(line[i] == '$')
         {
+            i++;
+            var = var_expand(line, &i);
+            value = ret_expand_val(var, env);
+            if(var)
+                free(var);
+        }
+        else{
+            start = i;
             size++;
             i++;
+            res = ft_substr(line, start , size);
         }
-        res = ft_substr(line, start, size);
-        i++;
-        var = var_expand(line, &i);
-        start = i;
-        value = ret_expand_val(var, env);
-        if(var)
-            free(var);
         res = ft_strjoin(res, value);
         str = ft_strjoin(str, res);
-        if(value)
-            free(value);
     }
+    printf("str <====>[%s]\n", str);
     return(str);
 }
