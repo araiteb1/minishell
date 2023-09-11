@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   pwd.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nait-ali <nait-ali@student.42.fr>          +#+  +:+       +#+        */
+/*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/03 18:32:47 by nait-ali          #+#    #+#             */
-/*   Updated: 2023/09/04 00:16:33 by nait-ali         ###   ########.fr       */
+/*   Updated: 2023/09/10 09:39:41 by araiteb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void ft_pwd()
+void ft_pwd(t_cmd *cmd)
 {
 	t_environement *tmp;
 
@@ -22,8 +22,8 @@ void ft_pwd()
 		if(!ft_strcmp(tmp->cle,"PWD"))
 		{
 
-			ft_putstr_fd(tmp->valeur, 1);
-			ft_putstr_fd("\n", 1);
+			ft_putstr_fd(tmp->valeur, cmd->fileout);
+			ft_putstr_fd("\n", cmd->fileout);
 			return ;
 		}
 		tmp = tmp->next;

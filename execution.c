@@ -6,7 +6,7 @@
 /*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/17 04:13:02 by araiteb           #+#    #+#             */
-/*   Updated: 2023/09/09 03:31:50 by araiteb          ###   ########.fr       */
+/*   Updated: 2023/09/11 12:56:29 by araiteb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,16 +26,31 @@ int	get_ev(char **env)
 	return (i);
 }
 
+void handel_quit_for_child(int sig)
+{
+	(void) sig;
+	// if(!an.flag_signal)
+	// 	return ;
+	printf("\\Quit: 3\n");
+	//an.exit_status = 131; l9itha flbash
+
+}
+
 
 void	ft_dup(t_cmd *ls, char **option, char **env)
 {
+
+	int flag = 0;
 	dup2 (ls->filein, 0);
 	dup2 (ls->fileout, 1);
-	if(ls->filein != 0)
-		close (ls->filein);
-	if (ls->fileout != 1)
-		close (ls->fileout);
-	if (check_builtins(ls) == 1)
+	ft_close(ls);
+	if(option)
+	{
+		flag = expand_env_variable(option, env);
+		if(!flag)
+			option_cmd_quots(option);
+	}
+	if (check_builtins(ls, option, env))
 		exit(0);
 	exec_chile (option, env, ls);
 }
@@ -74,11 +89,14 @@ void	exec_chile(char **option, char **env, t_cmd *list)
 {
 	char	*path;
 	(void)list;
+	// int flag = 0;
 	path = ft_get_path(option[0], env);
 	if (execve (path, option, env) == -1)
 	{
 		an.exit_status = 127;
-		printf("minishell: ,%s : command not found \n", option[0]);
+		write(2,"minishell: ,",13);
+		ft_putstr_fd(option[0], 2);
+		write(2," : command not found \n",23);
 		exit (EXIT_FAILURE);
 	}
 }
@@ -94,7 +112,34 @@ int 	check_doll(char *str)
 	}
 	return(0);
 }
-char    *option_expand(char *line)
+
+int     ft_size_nam(char *str, char c)
+{
+    int i = 0;
+    while(str[i] != c)
+        i++;
+    return(i);
+}
+
+char    *ret_expand_val(char *str, char **env)
+{
+    int i = 0;
+    char *value;
+    
+    value = NULL;
+    while(env[i])
+    {
+         if(ft_strncmp(env[i], str, ft_size_nam(env[i],'=')))
+             i++;
+         else
+             break;
+    }
+    if(env[i])
+        value = ft_substr(env[i], ft_size_nam(env[i], '=') + 1,ft_strlen(env[i]));
+    return(value);
+}
+
+char    *option_expand(char *line, char **env)
 {
     int i;
 	int j;
@@ -133,10 +178,9 @@ char    *option_expand(char *line)
 			}
 			else
 				ret1 = ft_strdup(ret);
-			value = getenv((ret1));
+			value = ret_expand_val(ret1, env);
 			if(ret1  && value)
 			{
-				value = getenv((ret1));
 				free(ret1);
 				ret1 = ft_strdup(value);
 			}
@@ -145,23 +189,25 @@ char    *option_expand(char *line)
 		if (line[i] && line[i] == '$')
 			i++;
 	}
-    return(str);
+    return(ft_strtrim(str," "));
 }
 
 int expand_env_variable(char **option, char **env)
 {
 	(void)env;
-	char *str=ft_strdup("");
-	int i = 0;
+	char *str=NULL;
+	int i;
 	int j;
-	while (option[i])
+
+	i = 0;
+
+	while (option && option[i])
 	{
 		str = ft_strdup(option[i]);
 		j = 0;
 		if (check_doll(str))
 		{
-			option[i] = option_expand(str);
-			printf("option %s\n", option[i]);
+			option[i] = option_expand(str, env);
 			return(1);
 		}
 		i++;
@@ -174,6 +220,8 @@ void 	option_cmd_quots(char **option)
 	int i = 0;
 	char *str = NULL;
 	char *new = NULL;
+	if(!option)
+		return ;
 	while(option[i])
 	{
 		str = ft_strdup(option[i]);
@@ -182,6 +230,7 @@ void 	option_cmd_quots(char **option)
 		i++;
 	}
 }
+
 void	ft_execution(t_cmd *list, char **env)
 {
 	t_cmd		*tmp; 
@@ -190,7 +239,7 @@ void	ft_execution(t_cmd *list, char **env)
 	int			**fds;
 	pid_t		*pd;
 	int			i;
-	int 	flag = 0;
+	
 	tmp = list;
 	i = 0;
 
@@ -203,6 +252,7 @@ void	ft_execution(t_cmd *list, char **env)
 		tmps = tmp->s_substruct;
 		while (tmps)
 		{
+			
 			if (tmps->type != word)
 				tmps = tmps->next->next;
 			if (tmps && tmps->type == word)
@@ -218,14 +268,16 @@ void	ft_execution(t_cmd *list, char **env)
 				tmps = tmps->next;
 			if ((tmps && !tmps->prev) || tmps->type != word)
 			{
-				if(!get_rd(&tmps, tmp, fds))
+				if(!get_rd(tmp->prev,&tmps, tmp, fds))
 					return ;
 			}
 			tmps = tmps->next;
 		}
-		flag = expand_env_variable(option, env);
-		if(!flag)
-			option_cmd_quots(option);
+		an.flag_signal = 1;
+		if (!tmp->prev && !tmp->next && check_builtins(tmp, option, env))
+			return ;
+		signal(SIGINT,SIG_IGN);
+		signal(SIGQUIT,handel_quit_for_child);
 		pd[i] = fork();
 		if (pd[i] == -1)
 		{
@@ -234,25 +286,28 @@ void	ft_execution(t_cmd *list, char **env)
 		}
 		if (pd[i] == 0)
 		{
+			signal(SIGINT,SIG_DFL);
 			ft_dup (tmp, option, env);
 		}
 		if(option)
 			ft_free(option);
-		if(tmp->filein != 0)
-			close (tmp->filein);
-		if (tmp->fileout != 1)
-			close (tmp->fileout);
+		ft_close(tmp);
 		if (tmp)
 			tmp = tmp->next;
 		i++;
 	}
 	i = 0;
+		int status;
 	while (i < ft_lstsize(list))
 	{
-		int status;
 		waitpid(pd[i], &status, 0);
 		i++;
     }
+	// if (WIFEXITED(status))
+	// 	an.exit_status = status;
+	// else if (WIFSIGNALED(status))
+	// 	an.exit_status = 128 + status;
+	// printf("%d\n", an.exit_status);
 	if(fds)
 		ft_free_matrix(fds, ft_lstsize(list) - 1);
 }

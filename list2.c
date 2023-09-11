@@ -6,7 +6,7 @@
 /*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/06 02:51:57 by araiteb           #+#    #+#             */
-/*   Updated: 2023/09/09 03:35:47 by araiteb          ###   ########.fr       */
+/*   Updated: 2023/09/11 10:30:42 by araiteb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,36 +30,36 @@ char 	*subc_quots(char *str)
 		i++;
 	}
 	ret[j] = '\0';
-	printf("||||   %s\n", ret);
 	return(ret);
 }
 
-t_cmd	*ft_lstnew(char *cmd, char **env)
+t_cmd	*ft_lstnew(char *cmd)
 {
 	t_cmd	*l;
 	char	*str = NULL;
 	// char *new = NULL;
 	int		i;
-(void)env;
 	l = malloc(sizeof(t_cmd));
 	l->s_substruct = NULL;
 	if (!l)
 		return (NULL);
 	i = 0;
-	// new = expand_ret(cmd, env);
-	// printf("new ==> %s\n", new);
 	while (cmd[i])
 	{
 		if (cmd[i] == '\'')
 		{
 			i++;
 			str = get_quotes(cmd, &i, SQUOTE);
+			if(!str)
+				str = ft_strdup(" ");
 			i++;
 		}
 		else if (cmd[i] == '"')
 		{
 			i++;
 			str = get_quotes(cmd, &i, DQUOTES);
+			if(!str)
+				str = ft_strdup(" ");
 			i++;
 		}
 		else if (cmd[i] == '>' || cmd[i] == '<')
@@ -69,12 +69,12 @@ t_cmd	*ft_lstnew(char *cmd, char **env)
 			{
 				if(str[0] == '>' && str[1] == '>')
 				{
-					an.exit_status = 255;
+					an.exit_status = 258;
 					write(2, "minishell: syntax error near unexpected token `>>'\n", 52);
 				}
 				if(str[0] == '<' && str[1] == '<')
 				{
-					an.exit_status = 255;
+					an.exit_status = 258;
 					write(2, "minishell: syntax error near unexpected token `<<'\n", 52);
 
 				}
@@ -85,7 +85,6 @@ t_cmd	*ft_lstnew(char *cmd, char **env)
 			str = get_command(cmd, &i);
 		if(str)
 		{
-			// printf("str <========> %s\n", str);
 			n_lstadd_back(&(l->s_substruct), n_lstnew(str));
 		}
 		while (cmd[i] == ' ')

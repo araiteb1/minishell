@@ -6,7 +6,7 @@
 /*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/05 22:23:53 by araiteb           #+#    #+#             */
-/*   Updated: 2023/09/07 23:25:52 by araiteb          ###   ########.fr       */
+/*   Updated: 2023/09/09 04:27:46 by araiteb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,6 +84,5 @@ char    *expand_ret(char *line, char **env)
         res = ft_strjoin(res, value);
         str = ft_strjoin(str, res);
     }
-    printf("str <====>[%s]\n", str);
     return(str);
 }

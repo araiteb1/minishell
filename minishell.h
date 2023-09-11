@@ -6,7 +6,7 @@
 /*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/14 09:44:32 by araiteb           #+#    #+#             */
-/*   Updated: 2023/09/08 21:36:35 by araiteb          ###   ########.fr       */
+/*   Updated: 2023/09/11 08:56:41 by araiteb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,6 +83,8 @@ typedef struct s_gvar
 	int		exit_status;
 	t_environement	*environement;
 	char *pwd;
+	int flag_signal;
+	int flag_herdoc;
 }	t_gvar;
 
 extern t_gvar	an;
@@ -90,6 +92,9 @@ extern t_gvar	an;
 // void increment_shlvl();
 
 /*-----function_exect_par------*/
+
+void sigint_herdoc(int sig);
+int	here_doc(char *tmps, char *end);
 char		**ft_split(const char *s, char c);
 int			ft_check_fils(char *name_fd, int mode, int permession);
 int			ft_strncmp(const char *s1, const char *s2, size_t n);
@@ -101,7 +106,8 @@ char		*ft_strdup(const char *s);
 char		*ft_substr(const char *s, unsigned int start, size_t len);
 void		print_cmds(t_cmd *ls);
 int			syntaxe_error(t_cmd *ls);
-t_cmd		*ft_lstnew(char *cmd, char **env);
+// t_cmd		*ft_lstnew(char *cmd, char **env);
+t_cmd		*ft_lstnew(char *cmd);
 int			ft_lstsize(t_cmd *lst);
 t_cmd		*ft_lstlast(t_cmd *lst);
 void		ft_lstadd_back(t_cmd **lst, t_cmd *new);
@@ -127,27 +133,30 @@ void		ft_close(t_cmd *ls);
 void		ft_close_pipe(t_cmd *ls, int **fds);
 void		ft_free_matrix(int **str, int size);
 void		ft_creat_pipe(int size, int **fds);
-int		get_rd(t_substruct **cmd, t_cmd *ls, int **fds);
+int		get_rd(t_cmd *prvcmd,t_substruct **cmd, t_cmd *ls, int **fds);
 int		find_equal(char *s, char c);
 void	ft_unset(t_cmd *cmd);
 t_environement	*create_env(char **tab);
 void  ft_cd(t_cmd *cmd);
-void	ft_echo(t_cmd *ls);
+void	ft_echo(t_cmd *ls, char **option);
 void	ft_env(t_cmd *cmd);
 void ft_exit(t_cmd *lst);
 int	ft_strcmp(char *s1, char *s2);
 void	ft_putstr_fd(char *s, int fd);
 int	ft_atoi(const char *str);
 char	*ft_strchr(const char *s, int c);
-void ft_pwd();
+void ft_pwd(t_cmd *cmd);
 void	ft_unset(t_cmd *cmd);
 void	free_environement(void);
 void	lstadd_back_environement(t_environement **lst, t_environement *new);
 t_environement	*creation_node_in_env(char *env, char *key, char *val);
 void ft_export(t_cmd *cmd);
 void	ft_cd(t_cmd *cmd);
-int check_builtins(t_cmd *cmd);
+int check_builtins(t_cmd *cmd, char **option, char **env);
 char 	*subc_quots(char *str);
 char	*ft_itoa(int n);
 char    *expand_ret(char *line, char **env);
+int expand_env_variable(char **option, char **env);
+void 	option_cmd_quots(char **option);
+
 #endif

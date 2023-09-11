@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   syntaxe.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nait-ali <nait-ali@student.42.fr>          +#+  +:+       +#+        */
+/*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/15 21:27:51 by araiteb           #+#    #+#             */
-/*   Updated: 2023/09/02 23:13:55 by nait-ali         ###   ########.fr       */
+/*   Updated: 2023/09/11 12:14:11 by araiteb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,7 +102,7 @@ int	syntaxe_error(t_cmd *ls)
 		{
 			if (chack_status(tmps, tmp) == 1)
 			{
-				an.exit_status = 255;
+				an.exit_status = 258;
 				write (2, "minishell: syntax error near", 29);
 				write(2, "unexpected token `newline'\n", 28);
 				return (0);
@@ -111,5 +111,9 @@ int	syntaxe_error(t_cmd *ls)
 		}
 		tmp = tmp->next;
 	}
+	// tmp = ls;
+	// // if(tmp && !tmp->next && !tmp->prev && (tmp->s_substruct->type == rd_input || tmp->s_substruct->type == rd_output || tmp->s_substruct->type == rd_output_append )
+	// // && (tmp->s_substruct->next->type == word) && !tmp->s_substruct->next->next)
+	// // 	return (0);
 	return (1);
 }

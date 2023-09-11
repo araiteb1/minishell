@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   unset.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nait-ali <nait-ali@student.42.fr>          +#+  +:+       +#+        */
+/*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/03 18:33:00 by nait-ali          #+#    #+#             */
-/*   Updated: 2023/09/03 18:33:01 by nait-ali         ###   ########.fr       */
+/*   Updated: 2023/09/11 10:31:27 by araiteb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,14 @@ void	ft_unset(t_cmd *cmd)
 	tmp = cmd->s_substruct->next;
 	while (tmp)
 	{
-		printf("%s    \n", tmp->data);
+		if(valid_args(tmp->data))
+		{
+			ft_putstr_fd("minishell: unset: `", cmd->fileout);
+			ft_putstr_fd(tmp->data,cmd->fileout);
+			ft_putstr_fd("': not a valid identifier\n", cmd->fileout);
+			an.exit_status = 1;
+			return ;
+		}
 		if (!valid_args(tmp->data))
 		{
 			an.exit_status = 0;
