@@ -6,23 +6,24 @@
 /*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/06 02:51:57 by araiteb           #+#    #+#             */
-/*   Updated: 2023/09/11 10:30:42 by araiteb          ###   ########.fr       */
+/*   Updated: 2023/09/12 12:05:35 by araiteb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-char 	*subc_quots(char *str)
+
+char	*subc_quots(char *str)
 {
-	int i;
-	int j;
-	char *ret;
-	
+	int		i;
+	int		j;
+	char	*ret;
+
 	i = 0;
 	ret = malloc(sizeof(char) * ft_strlen(str));
 	j = 0;
-	while(str[i])
+	while (str[i])
 	{
-		if(str[i] != '\'' && str[i] != '"')
+		if (str[i] != '\'' && str[i] != '"')
 		{
 			ret[j] = str[i];
 			j++;
@@ -30,15 +31,16 @@ char 	*subc_quots(char *str)
 		i++;
 	}
 	ret[j] = '\0';
-	return(ret);
+	return (ret);
 }
 
 t_cmd	*ft_lstnew(char *cmd)
 {
 	t_cmd	*l;
-	char	*str = NULL;
-	// char *new = NULL;
+	char	*str;
 	int		i;
+
+	str = NULL;
 	l = malloc(sizeof(t_cmd));
 	l->s_substruct = NULL;
 	if (!l)
@@ -50,7 +52,7 @@ t_cmd	*ft_lstnew(char *cmd)
 		{
 			i++;
 			str = get_quotes(cmd, &i, SQUOTE);
-			if(!str)
+			if (!str)
 				str = ft_strdup(" ");
 			i++;
 		}
@@ -58,35 +60,34 @@ t_cmd	*ft_lstnew(char *cmd)
 		{
 			i++;
 			str = get_quotes(cmd, &i, DQUOTES);
-			if(!str)
+			if (!str)
 				str = ft_strdup(" ");
 			i++;
 		}
 		else if (cmd[i] == '>' || cmd[i] == '<')
 		{
 			str = get_redirection(cmd, &i);
-			if(ft_strlen(str) > 2 || ft_strlen(str) < 1)
+			if (ft_strlen(str) > 2 || ft_strlen(str) < 1)
 			{
-				if(str[0] == '>' && str[1] == '>')
+				if (str[0] == '>' && str[1] == '>')
 				{
 					an.exit_status = 258;
-					write(2, "minishell: syntax error near unexpected token `>>'\n", 52);
+					write(2, "minishell: syntax error", 23);
+					write(2, "near unexpected token `>>'\n", 27);
 				}
-				if(str[0] == '<' && str[1] == '<')
+				if (str[0] == '<' && str[1] == '<')
 				{
 					an.exit_status = 258;
-					write(2, "minishell: syntax error near unexpected token `<<'\n", 52);
-
+					write(2, "minishell: syntax error", 23);
+					write(2, "near unexpected token `<<'\n", 27);
 				}
-				return NULL;
+				return (NULL);
 			}
 		}
 		else
 			str = get_command(cmd, &i);
-		if(str)
-		{
+		if (str)
 			n_lstadd_back(&(l->s_substruct), n_lstnew(str));
-		}
 		while (cmd[i] == ' ')
 			i++;
 	}

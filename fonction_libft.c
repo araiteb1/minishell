@@ -6,7 +6,7 @@
 /*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/14 11:45:15 by araiteb           #+#    #+#             */
-/*   Updated: 2023/09/09 04:04:33 by araiteb          ###   ########.fr       */
+/*   Updated: 2023/09/12 11:31:28 by araiteb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,9 +16,10 @@
 size_t	ft_strlen(const char *str)
 {
 	size_t	i;
-	if(!str)
-		return (0);
+
 	i = 0;
+	if (!str)
+		return (0);
 	while (str[i])
 		i++;
 	return (i);
@@ -54,8 +55,8 @@ char	*ft_strjoin(char *s1, char *s2)
 	char	*new;
 	size_t	l1;
 	size_t	l2;
-	
-	if(!s1)
+
+	if (!s1)
 		l1 = 0;
 	else
 		l1 = ft_strlen(s1);
@@ -77,7 +78,7 @@ char	*ft_strdup(const char *s)
 	int		i;
 
 	i = 0;
-	if(!s)
+	if (!s)
 		return (NULL);
 	len = ft_strlen(s);
 	tp = (char *)malloc((len + 1) * sizeof(char));
@@ -102,7 +103,6 @@ char	*ft_substr(const char *s, unsigned int start, size_t len)
 		return (ft_strdup(" "));
 	if ((start + len) >= lens)
 	{
-
 		new = (char *)malloc(((lens - start) + 1) * sizeof(char));
 		if (!new)
 			return (0);

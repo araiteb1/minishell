@@ -6,7 +6,7 @@
 /*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/19 04:07:40 by araiteb           #+#    #+#             */
-/*   Updated: 2023/09/11 10:32:55 by araiteb          ###   ########.fr       */
+/*   Updated: 2023/09/12 11:23:57 by araiteb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ char	**__resize(char **Array, char *new)
 	}
 	tmp[len] = strdup(new);
 	tmp[len + 1] = NULL;
-	if(Array)
+	if (Array)
 		free (Array);
 	return (tmp);
 }

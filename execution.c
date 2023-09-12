@@ -6,7 +6,7 @@
 /*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/17 04:13:02 by araiteb           #+#    #+#             */
-/*   Updated: 2023/09/11 12:56:29 by araiteb          ###   ########.fr       */
+/*   Updated: 2023/09/12 11:20:59 by araiteb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,15 +41,23 @@ void	ft_dup(t_cmd *ls, char **option, char **env)
 {
 
 	int flag = 0;
+	int i = 0;
 	dup2 (ls->filein, 0);
 	dup2 (ls->fileout, 1);
 	ft_close(ls);
+	while(option[i])
+	{
+		printf("option   ==> %s | fileou %d | filein %d\n", option[i], ls->fileout, ls->filein);
+		i++;
+	}
 	if(option)
 	{
 		flag = expand_env_variable(option, env);
 		if(!flag)
 			option_cmd_quots(option);
 	}
+	ls->filein = 0;
+	ls->fileout = 1;
 	if (check_builtins(ls, option, env))
 		exit(0);
 	exec_chile (option, env, ls);
@@ -297,9 +305,9 @@ void	ft_execution(t_cmd *list, char **env)
 		i++;
 	}
 	i = 0;
-		int status;
 	while (i < ft_lstsize(list))
 	{
+		int status;
 		waitpid(pd[i], &status, 0);
 		i++;
     }

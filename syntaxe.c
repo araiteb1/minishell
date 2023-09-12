@@ -6,7 +6,7 @@
 /*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/15 21:27:51 by araiteb           #+#    #+#             */
-/*   Updated: 2023/09/11 12:14:11 by araiteb          ###   ########.fr       */
+/*   Updated: 2023/09/12 12:08:32 by araiteb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,20 +42,20 @@ char	*get_quotes(char *cmd, int *start, int type)
 		quote = '\'';
 	i = *start;
 	size = 0;
-	if(cmd[*start + 1]&& cmd[*start + 1] == type)
-		return(NULL);
+	if (cmd[(*start) + 1] && cmd[(*start) + 1] == type)
+		return (NULL);
 	while (cmd[*start] && cmd[*start] != quote)
 	{
 		size++;
 		(*start)++;
 	}
-	if(size == 0)
-		return(NULL);
+	if (size == 0)
+		return (NULL);
 	quot = ft_substr(cmd, i, size);
 	return (quot);
 }
 
-char	* get_command(char *cmd, int *start)
+char	*get_command(char *cmd, int *start)
 {
 	char	*ret;
 	int		i;
@@ -111,9 +111,5 @@ int	syntaxe_error(t_cmd *ls)
 		}
 		tmp = tmp->next;
 	}
-	// tmp = ls;
-	// // if(tmp && !tmp->next && !tmp->prev && (tmp->s_substruct->type == rd_input || tmp->s_substruct->type == rd_output || tmp->s_substruct->type == rd_output_append )
-	// // && (tmp->s_substruct->next->type == word) && !tmp->s_substruct->next->next)
-	// // 	return (0);
 	return (1);
 }

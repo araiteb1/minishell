@@ -6,7 +6,7 @@
 /*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/14 09:44:28 by araiteb           #+#    #+#             */
-/*   Updated: 2023/09/11 12:57:16 by araiteb          ###   ########.fr       */
+/*   Updated: 2023/09/12 10:25:28 by araiteb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,12 +119,10 @@ char	*ft_itoa(int n)
 
 int check_builtins(t_cmd *cmd, char **option, char **env)
 {
-	(void)env;
 	int flag = 0;
-	
 	flag = expand_env_variable(option, env);
-	if(!flag)
-		option_cmd_quots(option);
+	if (!flag)
+		option_cmd_quots (option);
 	if (cmd->s_substruct && !ft_strcmp("pwd", cmd->s_substruct->data))
 		return (ft_pwd(cmd), 1);
 	if (cmd->s_substruct && !ft_strcmp("echo", cmd->s_substruct->data))
