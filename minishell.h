@@ -6,7 +6,7 @@
 /*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/14 09:44:32 by araiteb           #+#    #+#             */
-/*   Updated: 2023/09/11 08:56:41 by araiteb          ###   ########.fr       */
+/*   Updated: 2023/09/14 03:02:16 by araiteb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@
 #include <sys/types.h>
 #include<signal.h>
 #include<stdbool.h>
+#include <errno.h>
 
 # define DQUOTES 0
 # define SQUOTE 1
@@ -134,7 +135,7 @@ void		ft_close_pipe(t_cmd *ls, int **fds);
 void		ft_free_matrix(int **str, int size);
 void		ft_creat_pipe(int size, int **fds);
 int		get_rd(t_cmd *prvcmd,t_substruct **cmd, t_cmd *ls, int **fds);
-int		find_equal(char *s, char c);
+int		find_equal_or_plus(char *s, char c);
 void	ft_unset(t_cmd *cmd);
 t_environement	*create_env(char **tab);
 void  ft_cd(t_cmd *cmd);
@@ -143,7 +144,7 @@ void	ft_env(t_cmd *cmd);
 void ft_exit(t_cmd *lst);
 int	ft_strcmp(char *s1, char *s2);
 void	ft_putstr_fd(char *s, int fd);
-int	ft_atoi(const char *str);
+int	ft_atoi(char *str);
 char	*ft_strchr(const char *s, int c);
 void ft_pwd(t_cmd *cmd);
 void	ft_unset(t_cmd *cmd);
@@ -159,4 +160,18 @@ char    *expand_ret(char *line, char **env);
 int expand_env_variable(char **option, char **env);
 void 	option_cmd_quots(char **option);
 
+// char	*ft_itoa(int n);
+void init_signals(void);
+void signals_in_child_process(int status);
+char **get_env_values(t_environement *env_list);
+void init_environement(char **env);
+void message_error(char *s1, char *s2, char *s3);
+void	print_environement(t_cmd *ls);
+int	chedir_error(char *to);
+int	cd_not_exist_directory(char *to);
+void	error_args_export(char *varr);
+int	valid_args(char *var);
+char	*str_sans_plus(char *str);
+void	export_new_var_in_env(char *str, char *var, char c, ssize_t index);
+void	message_error(char *s1, char *s2, char *s3);
 #endif

@@ -6,7 +6,7 @@
 /*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/17 04:13:02 by araiteb           #+#    #+#             */
-/*   Updated: 2023/09/12 11:20:59 by araiteb          ###   ########.fr       */
+/*   Updated: 2023/09/14 07:12:41 by araiteb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,35 +26,19 @@ int	get_ev(char **env)
 	return (i);
 }
 
-void handel_quit_for_child(int sig)
-{
-	(void) sig;
-	// if(!an.flag_signal)
-	// 	return ;
-	printf("\\Quit: 3\n");
-	//an.exit_status = 131; l9itha flbash
-
-}
-
-
 void	ft_dup(t_cmd *ls, char **option, char **env)
 {
 
 	int flag = 0;
-	int i = 0;
+	// int i = 0;
 	dup2 (ls->filein, 0);
 	dup2 (ls->fileout, 1);
 	ft_close(ls);
-	while(option[i])
-	{
-		printf("option   ==> %s | fileou %d | filein %d\n", option[i], ls->fileout, ls->filein);
-		i++;
-	}
 	if(option)
 	{
 		flag = expand_env_variable(option, env);
-		if(!flag)
-			option_cmd_quots(option);
+		// if(!flag)
+		// 	option_cmd_quots(option);
 	}
 	ls->filein = 0;
 	ls->fileout = 1;
@@ -96,16 +80,36 @@ char	*ft_get_path(char *cmd, char **env)
 void	exec_chile(char **option, char **env, t_cmd *list)
 {
 	char	*path;
+	char *str;
 	(void)list;
-	// int flag = 0;
+	option_cmd_quots(option);
 	path = ft_get_path(option[0], env);
 	if (execve (path, option, env) == -1)
 	{
-		an.exit_status = 127;
-		write(2,"minishell: ,",13);
-		ft_putstr_fd(option[0], 2);
-		write(2," : command not found \n",23);
-		exit (EXIT_FAILURE);
+		if(option[0][0] == '.' && option[0][1] == '/')
+		{
+			str = strerror(errno);
+			if(!ft_strcmp(str, "Exec format error"))
+			{
+				ft_putstr_fd("minishell: ",2);
+				ft_putstr_fd(option[0],2);
+				ft_putstr_fd(": Permission denied\n",2);
+			}
+			else
+			{
+				ft_putstr_fd("minishell: ",2);
+				ft_putstr_fd(option[0],2);
+				ft_putstr_fd(": is a directory\n",2);
+			}
+			an.exit_status = 126;
+		}
+		else{
+			an.exit_status = 127;
+			write(2,"minishell: ",13);
+			ft_putstr_fd(option[0], 2);
+			write(2," : command not found \n",23);
+		}
+		exit (an.exit_status);
 	}
 }
 int 	check_doll(char *str)
@@ -137,7 +141,7 @@ char    *ret_expand_val(char *str, char **env)
     value = NULL;
     while(env[i])
     {
-         if(ft_strncmp(env[i], str, ft_size_nam(env[i],'=')))
+         if(ft_strncmp(env[i], str, ft_strlen(str)))
              i++;
          else
              break;
@@ -150,7 +154,7 @@ char    *ret_expand_val(char *str, char **env)
 char    *option_expand(char *line, char **env)
 {
     int i;
-	int j;
+	// int j;
     int size = 0;
 	char 	*str = NULL;
     char *ret =  NULL;
@@ -159,7 +163,7 @@ char    *option_expand(char *line, char **env)
 	int start;
 
 	i = 0;
-	while(line[i])
+	while(line && line[i])
 	{
     	start = i;
 		size = 0;
@@ -169,27 +173,20 @@ char    *option_expand(char *line, char **env)
 			i++;
 		}
 		ret = ft_substr(line, start, size);
+		if(!ft_strncmp(ret, "?",ft_strlen(ret)))
+		{
+			str= ft_itoa(an.exit_status);
+			return (str);
+			
+		}
 		if(ret && !check_doll(ret))
 		{
-			j=0;
-			if (ret[j] == '\'')
-			{
-				j++;
-				ret1 = get_quotes(ret, &j, SQUOTE);
-				j++;
-			}
-			else if (ret[j] == '"')
-			{
-				j++;
-				ret1 = get_quotes(ret, &j, DQUOTES);
-				j++;
-			}
-			else
-				ret1 = ft_strdup(ret);
+			ret1 = ft_strdup(ret);
 			value = ret_expand_val(ret1, env);
-			if(ret1  && value)
+			if(ret1 && value)
 			{
 				free(ret1);
+				ret1 = NULL;
 				ret1 = ft_strdup(value);
 			}
 			str = ft_strjoin(str, ret1);
@@ -202,7 +199,6 @@ char    *option_expand(char *line, char **env)
 
 int expand_env_variable(char **option, char **env)
 {
-	(void)env;
 	char *str=NULL;
 	int i;
 	int j;
@@ -228,7 +224,7 @@ void 	option_cmd_quots(char **option)
 	int i = 0;
 	char *str = NULL;
 	char *new = NULL;
-	if(!option)
+	if(!option || !ft_strcmp(option[i], " "))
 		return ;
 	while(option[i])
 	{
@@ -281,11 +277,8 @@ void	ft_execution(t_cmd *list, char **env)
 			}
 			tmps = tmps->next;
 		}
-		an.flag_signal = 1;
 		if (!tmp->prev && !tmp->next && check_builtins(tmp, option, env))
 			return ;
-		signal(SIGINT,SIG_IGN);
-		signal(SIGQUIT,handel_quit_for_child);
 		pd[i] = fork();
 		if (pd[i] == -1)
 		{
@@ -294,6 +287,7 @@ void	ft_execution(t_cmd *list, char **env)
 		}
 		if (pd[i] == 0)
 		{
+			signal(SIGQUIT,SIG_DFL);
 			signal(SIGINT,SIG_DFL);
 			ft_dup (tmp, option, env);
 		}
@@ -305,18 +299,15 @@ void	ft_execution(t_cmd *list, char **env)
 		i++;
 	}
 	i = 0;
+	int status;
 	while (i < ft_lstsize(list))
 	{
-		int status;
 		waitpid(pd[i], &status, 0);
 		i++;
     }
-	// if (WIFEXITED(status))
-	// 	an.exit_status = status;
-	// else if (WIFSIGNALED(status))
-	// 	an.exit_status = 128 + status;
-	// printf("%d\n", an.exit_status);
 	if(fds)
 		ft_free_matrix(fds, ft_lstsize(list) - 1);
+	signals_in_child_process(status);
+		
+	// if(an.flag_herdoc == 0)
 }
- // while(wait(&status) =! -1);

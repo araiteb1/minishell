@@ -6,7 +6,7 @@
 /*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/03 18:33:00 by nait-ali          #+#    #+#             */
-/*   Updated: 2023/09/11 10:31:27 by araiteb          ###   ########.fr       */
+/*   Updated: 2023/09/14 03:05:26 by araiteb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,79 +30,80 @@ void	supprimer_var_env(t_environement *node, int var)
 	free(tmp->cle);
 	free(tmp->valeur);
 	free(tmp); 
-	// tmp = NULL;
 }
 
 int	valid_args(char *var)
 {
-	int	l;
+	int	flag;
 
-	l = 0;
-	while ((*var >= 'a' && *var <= 'z') || (*var >= 'A' && *var <= 'Z') || *var == '_')
+	flag = 0;
+	while ((*var >= 'a' && *var <= 'z') || \
+	(*var >= 'A' && *var <= 'Z') || *var == '_')
 	{
 		var++;
-		l++;
+		flag++;
 	}
-	while (((*var >= 'a' && *var <= 'z') || (*var >= 'A' && *var <= 'Z')
-		|| (*var >= '0' && *var <= '9') || *var == '_'))
+	while (((*var >= 'a' && *var <= 'z') || (*var >= 'A' && *var <= 'Z') \
+	|| (*var >= '0' && *var <= '9') || *var == '_'))
 		var++;
-	if (!l || (!(*var == '+' && *(var + 1) == '=') && *var != '=' && *var))
+	if (!flag || (!(*var == '+' && *(var + 1) == '=') && *var != '=' && *var))
 		return (1);
-		//khassni nprinti lmessage d'erreur
 	return (0);
 }
 
-int	find_equal(char *s, char c)
+int	find_equal_or_plus(char *s, char c)
 {
 	int	i;
 
 	i = 0;
 	if (!s)
 		return (0);
-	while (*s)
+	while (s[i])
 	{
-		if (*s == c)
+		if (s[i] == c)
 			return (i);
-		s++;
 		i++;
 	}
 	return (-1);
 }
 
-void	ft_unset(t_cmd *cmd)
+void	help_unset(char *tmp)
 {
 	t_environement	*var;
 	t_environement	*save;
-	t_substruct *tmp;
-	int		i;
+	int				i;
+
+	var = an.environement;
+	i = 0;
+	while (var)
+	{
+		if (!ft_strcmp(tmp, var->cle))
+		{
+			supprimer_var_env(save, i);
+			break ;
+		}
+		save = var;
+		var = var->next;
+		i++;
+	}
+}
+
+void	ft_unset(t_cmd *cmd)
+{
+	t_substruct		*tmp;
 
 	tmp = cmd->s_substruct->next;
 	while (tmp)
 	{
-		if(valid_args(tmp->data))
+		if (valid_args(tmp->data))
 		{
-			ft_putstr_fd("minishell: unset: `", cmd->fileout);
-			ft_putstr_fd(tmp->data,cmd->fileout);
-			ft_putstr_fd("': not a valid identifier\n", cmd->fileout);
+			message_error("minishell: unset: `", tmp->data, \
+			"': not a valid identifier\n");
 			an.exit_status = 1;
-			return ;
 		}
 		if (!valid_args(tmp->data))
 		{
-			an.exit_status = 0;
-			var = an.environement;
-			i = 0;
-			while (var)
-			{
-				if (!ft_strcmp(tmp->data, var->cle))
-				{
-					supprimer_var_env(save, i);
-						break; 
-				}
-				save = var;
-				var = var->next;
-				i++;
-			}
+			help_unset(tmp->data);
 		}
 		tmp = tmp->next;
 	}

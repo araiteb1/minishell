@@ -6,7 +6,7 @@
 /*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/03 18:32:22 by nait-ali          #+#    #+#             */
-/*   Updated: 2023/09/12 11:21:25 by araiteb          ###   ########.fr       */
+/*   Updated: 2023/09/14 02:40:44 by araiteb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,6 @@ void	ft_echo(t_cmd *ls, char **option)
 	}
 	while (cmd && option[i] && (option[i][0] != '<' && option[i][0] != '>'))
 	{
-		printf("fileout ::  [%d] \n", ls->fileout);
 		ft_putstr_fd(option[i], ls->fileout);
 		cmd = cmd->next;
 		i++;

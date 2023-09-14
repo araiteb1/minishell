@@ -6,7 +6,7 @@
 /*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/06 14:41:59 by araiteb           #+#    #+#             */
-/*   Updated: 2023/09/12 11:26:45 by araiteb          ###   ########.fr       */
+/*   Updated: 2023/09/14 04:01:33 by araiteb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,9 @@ int	here_doc(char *tmps, char *end)
 	signal (SIGINT, sigint_herdoc);
 	fl = ft_check_fils(tmps, O_CREAT | O_RDWR | O_TRUNC, 0644);
 	str = readline("> ");
-	while (str && ft_strncmp(str, end, ft_strlen(str) - 1))
+	if(!ft_strcmp(end, " "))
+		write(fl, str, ft_strlen(str));
+	while (str && ft_strcmp(str, end) && ft_strcmp(end, " "))
 	{
 		write(fl, str, ft_strlen(str));
 		write(fl, "\n", 1);

@@ -6,7 +6,7 @@
 /*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/06 02:51:57 by araiteb           #+#    #+#             */
-/*   Updated: 2023/09/12 12:05:35 by araiteb          ###   ########.fr       */
+/*   Updated: 2023/09/14 07:09:05 by araiteb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,72 +32,6 @@ char	*subc_quots(char *str)
 	}
 	ret[j] = '\0';
 	return (ret);
-}
-
-t_cmd	*ft_lstnew(char *cmd)
-{
-	t_cmd	*l;
-	char	*str;
-	int		i;
-
-	str = NULL;
-	l = malloc(sizeof(t_cmd));
-	l->s_substruct = NULL;
-	if (!l)
-		return (NULL);
-	i = 0;
-	while (cmd[i])
-	{
-		if (cmd[i] == '\'')
-		{
-			i++;
-			str = get_quotes(cmd, &i, SQUOTE);
-			if (!str)
-				str = ft_strdup(" ");
-			i++;
-		}
-		else if (cmd[i] == '"')
-		{
-			i++;
-			str = get_quotes(cmd, &i, DQUOTES);
-			if (!str)
-				str = ft_strdup(" ");
-			i++;
-		}
-		else if (cmd[i] == '>' || cmd[i] == '<')
-		{
-			str = get_redirection(cmd, &i);
-			if (ft_strlen(str) > 2 || ft_strlen(str) < 1)
-			{
-				if (str[0] == '>' && str[1] == '>')
-				{
-					an.exit_status = 258;
-					write(2, "minishell: syntax error", 23);
-					write(2, "near unexpected token `>>'\n", 27);
-				}
-				if (str[0] == '<' && str[1] == '<')
-				{
-					an.exit_status = 258;
-					write(2, "minishell: syntax error", 23);
-					write(2, "near unexpected token `<<'\n", 27);
-				}
-				return (NULL);
-			}
-		}
-		else
-			str = get_command(cmd, &i);
-		if (str)
-			n_lstadd_back(&(l->s_substruct), n_lstnew(str));
-		while (cmd[i] == ' ')
-			i++;
-	}
-	l->data = cmd;
-	l->fileout = 1;
-	l->filein = 0;
-	l->next = NULL;
-	l ->prev = NULL;
-	l->i = 0;
-	return (l);
 }
 
 int	ft_lstsize(t_cmd *lst)
@@ -146,6 +80,6 @@ void	ft_lstadd_back(t_cmd **lst, t_cmd *new)
 	}
 	else
 		*lst = new;
-	if (new->prev)
+	if (new && new->prev)
 		new->i = new->prev->i + 1;
 }

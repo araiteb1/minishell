@@ -6,7 +6,7 @@
 /*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/03 18:32:33 by nait-ali          #+#    #+#             */
-/*   Updated: 2023/09/09 04:02:24 by araiteb          ###   ########.fr       */
+/*   Updated: 2023/09/14 02:51:09 by araiteb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,27 +29,25 @@ int	correct_arg(char *num)
 	return (1);
 }
 
+void	normal_exit(void)
+{
+	ft_putstr_fd("exit\n", 2);
+	an.exit_status = 0;
+	exit(0);
+}
 
-
- void ft_exit(t_cmd *lst)
- {
+void	ft_exit(t_cmd *lst)
+{
 	if (lst->s_substruct && !lst->s_substruct->next)
+		normal_exit();
+	else if (!correct_arg(lst->s_substruct->next->data))
 	{
-		//khass nfree dakchi li khasso itfriya
-		ft_putstr_fd("exit\n", 2);
-		an.exit_status = 0;
-		exit(0);
-	}
-
-	else if(!correct_arg(lst->s_substruct->data))
-	{
-		ft_putstr_fd("exit \n", 2);
-		ft_putstr_fd("minishell : exit: numeric argument required\n", 2);
+		message_error("exit \n", "minishell : exit: ", \
+		lst->s_substruct->next->data);
+		ft_putstr_fd(": numeric argument required\n", 2);
 		an.exit_status = 255;
 		exit (255);
-
 	}
-
 	else if (n_lstsize(lst->s_substruct) > 2)
 	{
 		ft_putstr_fd("exit\n", 2);
@@ -57,18 +55,9 @@ int	correct_arg(char *num)
 		an.exit_status = 1;
 		return ;
 	}
-
-	else if (n_lstsize(lst->s_substruct) == 2 && !correct_arg(lst->s_substruct->next->data))
-	{
-		ft_putstr_fd("exit \n", 2);
-		ft_putstr_fd("minishell : exit: numeric argument required\n", 2);
-		an.exit_status = 255;
-		exit (255);
-	}
 	else
 	{
 		ft_putstr_fd("exit\n", 2);
 		exit(ft_atoi((lst->s_substruct->next->data)));
 	}
-
- }
+}

@@ -6,7 +6,7 @@
 /*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/06 02:48:32 by araiteb           #+#    #+#             */
-/*   Updated: 2023/09/12 11:21:13 by araiteb          ###   ########.fr       */
+/*   Updated: 2023/09/14 07:07:43 by araiteb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,8 +70,11 @@ int	get_rd(t_cmd *command, t_substruct **cmd, t_cmd *ls, int **fds)
 	char *rdPrev = getLastCmd(command);
 	if ((*cmd)->type == heredoc || ((*cmd)->type == rd_input) || rdPrev != NULL )
 	{
-		if(!herd_rd_in(ls, cmd, rdPrev))
+		if(!herd_rd_in(ls, cmd, rdPrev)|| an.flag_herdoc == 1)
+		{
+			an.exit_status = 1;
 			return(0);
+		}
 		is_tr = 1;
 	}
 	else if (!is_tr && ls && ls->prev)
