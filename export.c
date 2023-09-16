@@ -44,7 +44,7 @@ static	int	search_key_in_env(char *var, char *s, int i, char c)
 {
 	t_environement	*tmp;
 
-	tmp = an.environement;
+	tmp = g_an.environement;
 	while (tmp)
 	{
 		if (!ft_strcmp(var, tmp->cle))
@@ -94,7 +94,7 @@ void	export(t_substruct *varr, int flag, char *var)
 		&& *var != '=' && *var))
 		{
 			error_args_export(varr->data);
-			an.exit_status = 1;
+			g_an.exit_status = 1;
 		}
 		export_variables(varr->data, *var);
 		varr = varr->next;
@@ -114,5 +114,5 @@ void	ft_export(t_cmd *cmd)
 		print_environement(cmd);
 	else
 		export(varr, flag, var);
-	an.exit_status = 0;
+	g_an.exit_status = 0;
 }

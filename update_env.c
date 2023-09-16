@@ -6,7 +6,7 @@
 /*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/03 18:33:06 by nait-ali          #+#    #+#             */
-/*   Updated: 2023/09/14 03:07:08 by araiteb          ###   ########.fr       */
+/*   Updated: 2023/09/16 02:20:30 by araiteb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ void	free_environement(void)
 	t_environement	*env;
 	t_environement	*var;
 
-	env = an.environement;
+	env = g_an.environement;
 	var = env;
 	while (env)
 	{
@@ -59,7 +59,7 @@ void	free_environement(void)
 		env = env->next;
 		free(var); 
 	}
-	an.environement = NULL;
+	g_an.environement = NULL;
 }
 
 char	**get_env_values(t_environement *env_list)
@@ -78,7 +78,7 @@ char	**get_env_values(t_environement *env_list)
 	}
 	env_values = (char **)malloc((count + 1) * sizeof(char *));
 	if (!env_values)
-		return (perror(""), an.exit_status = 1, NULL);
+		return (perror(""), g_an.exit_status = 1, NULL);
 	current = env_list;
 	i = 0;
 	while (current)

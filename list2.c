@@ -6,7 +6,7 @@
 /*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/06 02:51:57 by araiteb           #+#    #+#             */
-/*   Updated: 2023/09/14 07:09:05 by araiteb          ###   ########.fr       */
+/*   Updated: 2023/09/15 10:01:07 by araiteb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ char	*subc_quots(char *str)
 	char	*ret;
 
 	i = 0;
-	ret = malloc(sizeof(char) * ft_strlen(str));
+	ret = malloc(sizeof(char) * ft_strlen(str) + 1);
 	j = 0;
 	while (str[i])
 	{

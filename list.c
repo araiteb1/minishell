@@ -6,7 +6,7 @@
 /*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/14 21:35:57 by araiteb           #+#    #+#             */
-/*   Updated: 2023/09/12 11:36:38 by araiteb          ###   ########.fr       */
+/*   Updated: 2023/09/16 05:29:03 by araiteb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ t_substruct	*n_lstnew(char *cmd)
 	l = malloc(sizeof(t_substruct));
 	if (!l)
 		return (NULL);
-	l->data = ft_strtrim(cmd, " ");
+	l->data = ft_strdup(cmd);
 	l->type = get_type(l->data);
 	l->next = NULL;
 	l->prev = NULL;

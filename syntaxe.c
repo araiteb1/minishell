@@ -6,7 +6,7 @@
 /*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/15 21:27:51 by araiteb           #+#    #+#             */
-/*   Updated: 2023/09/14 06:54:30 by araiteb          ###   ########.fr       */
+/*   Updated: 2023/09/16 02:20:30 by araiteb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ char *supp_char(char *str, char c)
 	int i = 0;
 	int j = 0;
 
-	ret = malloc(sizeof(char) * ft_strlen(str));
+	ret = malloc(sizeof(char) * ft_strlen(str) + 1);
 	while(str[i])
 	{
 		if(str[i] == c)
@@ -44,8 +44,17 @@ char *supp_char(char *str, char c)
 		i++;
 	}
 	ret[j] = '\0';
+	// printf("ret :: %s\n", ret);
+	// exit(0);
 	return(ret);
 }
+int	ft_isalpha(int c)
+{
+	if (!(c >= 97 && c <= 122) && !(c >= 65 && c <= 90))
+		return (0);
+	return (1);
+}
+
 char	*get_quotes(char *cmd, int *start, int type)
 {
 	char	*quot;
@@ -59,8 +68,9 @@ char	*get_quotes(char *cmd, int *start, int type)
 		quote = '\'';
 	i = *start;
 	size = 0;
-	if (cmd[(*start) + 1] && cmd[(*start) + 1] == type)
-		return (NULL);
+	// if (cmd[(*start) + 1] && cmd[(*start) + 1] == type)
+	// 	return (NULL);
+	// printf("char :: [%c]\n", cmd[*start]);
 	while (cmd[*start])
 	{
 		if(cmd[*start] == quote && (cmd[*start + 1] == ' ' || cmd[*start + 1] == '\0') )
@@ -70,7 +80,9 @@ char	*get_quotes(char *cmd, int *start, int type)
 	}
 	if (size == 0)
 		return (NULL);
+	// printf("quot  :: %s\n",ft_substr(cmd, i, size));
 	quot = supp_char(ft_substr(cmd, i, size), quote);
+	// printf("quot  :: %s\n",quot);
 	return (quot);
 }
 
@@ -79,16 +91,26 @@ char	*get_command(char *cmd, int *start)
 	char	*ret;
 	int		i;
 	int		size;
+	char	*rest;
+	char	*tmp;
 
 	i = *start;
 	size = 0;
+	rest = NULL;
 	while (cmd[*start] && cmd[*start] != ' '
-		&& cmd[*start] != '>' && cmd[*start] != '<')
+		&& cmd[*start] != '>' && cmd[*start] != '<'
+		&& cmd[*start] != DQUOTES && cmd[*start] != SQUOTE)
 	{
 		size++;
 		(*start)++;
 	}
-	ret = ft_substr(cmd, i, size);
+	tmp = ft_substr(cmd, i, size);
+	if (cmd[*start] == DQUOTES || cmd[*start] == SQUOTE)
+		rest = get_str1(cmd, start);
+	if (rest)
+		ret = ft_strjoin(tmp, rest);
+	else
+		return (tmp);
 	return (ret);
 }
 
@@ -131,12 +153,17 @@ int	syntaxe_error(t_cmd *ls)
 	tmp = ls;
 	while (tmp)
 	{
+		if(!ft_strcmp(tmp->data, " "))
+		{
+			ft_putstr_fd("minishell:  syntax error near unexpected token `|'\n", 2);
+			return(0);
+		}
 		tmps = tmp->s_substruct;
 		while (tmps)
 		{
 			if (chack_status(tmps, tmp) == 1)
 			{
-				an.exit_status = 258;
+				g_an.exit_status = 258;
 				write (2, "minishell: syntax error near ", 30);
 				write(2, "unexpected token `newline'\n", 28);
 				return (0);

@@ -6,7 +6,7 @@
 /*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/03 18:32:33 by nait-ali          #+#    #+#             */
-/*   Updated: 2023/09/14 02:51:09 by araiteb          ###   ########.fr       */
+/*   Updated: 2023/09/16 02:20:30 by araiteb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ int	correct_arg(char *num)
 void	normal_exit(void)
 {
 	ft_putstr_fd("exit\n", 2);
-	an.exit_status = 0;
+	g_an.exit_status = 0;
 	exit(0);
 }
 
@@ -45,14 +45,14 @@ void	ft_exit(t_cmd *lst)
 		message_error("exit \n", "minishell : exit: ", \
 		lst->s_substruct->next->data);
 		ft_putstr_fd(": numeric argument required\n", 2);
-		an.exit_status = 255;
+		g_an.exit_status = 255;
 		exit (255);
 	}
 	else if (n_lstsize(lst->s_substruct) > 2)
 	{
 		ft_putstr_fd("exit\n", 2);
 		ft_putstr_fd("minishel: exit: too many arguments\n", 2);
-		an.exit_status = 1;
+		g_an.exit_status = 1;
 		return ;
 	}
 	else

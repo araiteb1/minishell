@@ -21,8 +21,8 @@ int	message_erreur(char *str)
 	ft_putstr_fd("minisell : exit: ", 2);
 	ft_putstr_fd(str, 2);
 	ft_putstr_fd(": numeric argument required\n", 2);
-	an.exit_status = 255;
-	return (an.exit_status);
+	g_an.exit_status = 255;
+	return (g_an.exit_status);
 }
 
 int	ft_atoi(char *str)
@@ -48,7 +48,7 @@ int	ft_atoi(char *str)
 			return (message_erreur(str));
 		str++;
 	}
-	an.exit_status = res * sign;
+	g_an.exit_status = res * sign;
 	return (res * sign);
 }
 

@@ -6,7 +6,7 @@
 /*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/13 03:35:59 by nait-ali          #+#    #+#             */
-/*   Updated: 2023/09/14 02:57:32 by araiteb          ###   ########.fr       */
+/*   Updated: 2023/09/16 02:20:30 by araiteb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,7 @@ void	ft_shlvl(char *env, char *cle, char *value)
 		free (value);
 		value = ft_strdup(tmp);
 	}
-	lstadd_back_environement(&an.environement, \
+	lstadd_back_environement(&g_an.environement, \
 	creation_node_in_env(ft_strdup(env), cle, value));
 }
 
@@ -90,7 +90,7 @@ void	init_environement(char **env)
 	char	*value;
 
 	i = 0;
-	an.environement = NULL;
+	g_an.environement = NULL;
 	while (*env)
 	{
 		i = find_equal_or_plus(*env, '=');
@@ -99,6 +99,6 @@ void	init_environement(char **env)
 		ft_shlvl(*env, cle, value);
 		env++;
 	}
-	getcwd(an.pwd, PATH_MAX);
+	getcwd(g_an.pwd, PATH_MAX);
 	rl_catch_signals = 0;
 }

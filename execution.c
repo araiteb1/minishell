@@ -6,7 +6,7 @@
 /*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/17 04:13:02 by araiteb           #+#    #+#             */
-/*   Updated: 2023/09/14 07:12:41 by araiteb          ###   ########.fr       */
+/*   Updated: 2023/09/16 07:26:39 by araiteb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,20 +26,15 @@ int	get_ev(char **env)
 	return (i);
 }
 
-void	ft_dup(t_cmd *ls, char **option, char **env)
+void	ft_dup(t_cmd *ls, char **option, char **env, int **fds)
 {
-
-	int flag = 0;
-	// int i = 0;
 	dup2 (ls->filein, 0);
 	dup2 (ls->fileout, 1);
+	if (fds)
+			ft_free_matrix(fds, ft_lstsize(ls) - 1);
 	ft_close(ls);
 	if(option)
-	{
-		flag = expand_env_variable(option, env);
-		// if(!flag)
-		// 	option_cmd_quots(option);
-	}
+		expand_env_variable(option, env);
 	ls->filein = 0;
 	ls->fileout = 1;
 	if (check_builtins(ls, option, env))
@@ -55,7 +50,7 @@ char	*ft_get_path(char *cmd, char **env)
 	char	**str;
 
 	str = NULL;
-	if (cmd[0] != '/')
+	if (cmd && cmd[0] != '/')
 	{
 		path = ft_substr (env[get_ev(env)], 5, ft_strlen(env[get_ev(env)]));
 		str = ft_split (path, ':');
@@ -82,11 +77,10 @@ void	exec_chile(char **option, char **env, t_cmd *list)
 	char	*path;
 	char *str;
 	(void)list;
-	option_cmd_quots(option);
 	path = ft_get_path(option[0], env);
 	if (execve (path, option, env) == -1)
 	{
-		if(option[0][0] == '.' && option[0][1] == '/')
+		if(option && option[0] && option[0][0] == '.' && option[0][1] == '/')
 		{
 			str = strerror(errno);
 			if(!ft_strcmp(str, "Exec format error"))
@@ -101,24 +95,24 @@ void	exec_chile(char **option, char **env, t_cmd *list)
 				ft_putstr_fd(option[0],2);
 				ft_putstr_fd(": is a directory\n",2);
 			}
-			an.exit_status = 126;
+			g_an.exit_status = 126;
 		}
 		else{
-			an.exit_status = 127;
-			write(2,"minishell: ",13);
+			g_an.exit_status = 127;
+			write(2,"minishell: ",11);
 			ft_putstr_fd(option[0], 2);
 			write(2," : command not found \n",23);
 		}
-		exit (an.exit_status);
+		exit (g_an.exit_status);
 	}
 }
-int 	check_doll(char *str)
+int 	check_doll(char *str, char c)
 {
 	int i = 0;
 
 	while(str[i])
 	{
-		if(str[i] == '$')
+		if(str[i] == c)
 			return(1);
 		i++;
 	}
@@ -154,14 +148,13 @@ char    *ret_expand_val(char *str, char **env)
 char    *option_expand(char *line, char **env)
 {
     int i;
-	// int j;
     int size = 0;
 	char 	*str = NULL;
     char *ret =  NULL;
 	char *ret1= NULL;
 	char *value = NULL;
 	int start;
-
+	char	*tmp = NULL;
 	i = 0;
 	while(line && line[i])
 	{
@@ -172,32 +165,35 @@ char    *option_expand(char *line, char **env)
 			size++;
 			i++;
 		}
-		ret = ft_substr(line, start, size);
-		if(!ft_strncmp(ret, "?",ft_strlen(ret)))
+		i++;
+		if (size > 0)
+			ret = ft_substr(line, start, size);
+		size = 0;
+		start = i;
+		while(line[i] && line[i] != '$')
 		{
-			str= ft_itoa(an.exit_status);
+			size++;
+			i++;
+		}
+		ret1 = ft_substr(line, start, size);
+		if(!ft_strncmp(ret1, "?",ft_strlen(ret1)))
+		{
+			str = ft_itoa(g_an.exit_status);
 			return (str);
 			
 		}
-		if(ret && !check_doll(ret))
+		if(ret1 && !check_doll(ret1, '$'))
 		{
-			ret1 = ft_strdup(ret);
 			value = ret_expand_val(ret1, env);
-			if(ret1 && value)
-			{
-				free(ret1);
-				ret1 = NULL;
-				ret1 = ft_strdup(value);
-			}
-			str = ft_strjoin(str, ret1);
+			tmp = str;
+			str = ft_strjoin(ret, value);
+			str = ft_strjoin(tmp, str);
 		}
-		if (line[i] && line[i] == '$')
-			i++;
 	}
     return(ft_strtrim(str," "));
 }
 
-int expand_env_variable(char **option, char **env)
+void expand_env_variable(char **option, char **env)
 {
 	char *str=NULL;
 	int i;
@@ -209,14 +205,10 @@ int expand_env_variable(char **option, char **env)
 	{
 		str = ft_strdup(option[i]);
 		j = 0;
-		if (check_doll(str))
-		{
+		if (check_doll(str, '$') == 1)
 			option[i] = option_expand(str, env);
-			return(1);
-		}
 		i++;
 	}
-	return(0);
 }
 
 void 	option_cmd_quots(char **option)
@@ -256,10 +248,9 @@ void	ft_execution(t_cmd *list, char **env)
 		tmps = tmp->s_substruct;
 		while (tmps)
 		{
-			
-			if (tmps->type != word)
+			if ((tmps->type != word) && (tmps->type != pip))
 				tmps = tmps->next->next;
-			if (tmps && tmps->type == word)
+			if (tmps && (tmps->type == word || tmps->type == pip))
 			{
 				option = __resize(option, tmps->data);
 				tmps = tmps->next;
@@ -283,13 +274,13 @@ void	ft_execution(t_cmd *list, char **env)
 		if (pd[i] == -1)
 		{
 			write (2, "error\n", 7);
-			an.exit_status = 1;
+			g_an.exit_status = 1;
 		}
 		if (pd[i] == 0)
 		{
 			signal(SIGQUIT,SIG_DFL);
 			signal(SIGINT,SIG_DFL);
-			ft_dup (tmp, option, env);
+			ft_dup (tmp, option, env, fds);
 		}
 		if(option)
 			ft_free(option);
@@ -308,6 +299,4 @@ void	ft_execution(t_cmd *list, char **env)
 	if(fds)
 		ft_free_matrix(fds, ft_lstsize(list) - 1);
 	signals_in_child_process(status);
-		
-	// if(an.flag_herdoc == 0)
 }

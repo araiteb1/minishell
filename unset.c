@@ -6,7 +6,7 @@
 /*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/03 18:33:00 by nait-ali          #+#    #+#             */
-/*   Updated: 2023/09/14 03:05:26 by araiteb          ###   ########.fr       */
+/*   Updated: 2023/09/16 02:20:30 by araiteb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,8 @@ void	supprimer_var_env(t_environement *node, int var)
 
 	if (!var)
 	{
-		tmp = an.environement;
-		an.environement = an.environement->next;
+		tmp = g_an.environement;
+		g_an.environement = g_an.environement->next;
 	}
 	else
 	{
@@ -73,7 +73,7 @@ void	help_unset(char *tmp)
 	t_environement	*save;
 	int				i;
 
-	var = an.environement;
+	var = g_an.environement;
 	i = 0;
 	while (var)
 	{
@@ -99,7 +99,7 @@ void	ft_unset(t_cmd *cmd)
 		{
 			message_error("minishell: unset: `", tmp->data, \
 			"': not a valid identifier\n");
-			an.exit_status = 1;
+			g_an.exit_status = 1;
 		}
 		if (!valid_args(tmp->data))
 		{

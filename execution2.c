@@ -6,7 +6,7 @@
 /*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/06 02:48:32 by araiteb           #+#    #+#             */
-/*   Updated: 2023/09/14 07:07:43 by araiteb          ###   ########.fr       */
+/*   Updated: 2023/09/16 02:20:30 by araiteb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ int	herd_rd_in(t_cmd *ls, t_substruct **cmd, char *rdPrev)
 			write(2, "minishell : ",13);
 			write(2, new , ft_strlen(new));
 			write(2, ": No such file or directory\n", 29);
-			an.exit_status = 1;
+			g_an.exit_status = 1;
 			return(0);
 		}
 		else
@@ -70,9 +70,11 @@ int	get_rd(t_cmd *command, t_substruct **cmd, t_cmd *ls, int **fds)
 	char *rdPrev = getLastCmd(command);
 	if ((*cmd)->type == heredoc || ((*cmd)->type == rd_input) || rdPrev != NULL )
 	{
-		if(!herd_rd_in(ls, cmd, rdPrev)|| an.flag_herdoc == 1)
+		if (ls->i > 0 && fds[ls->i - 1][0])
+			close(fds[ls->i - 1][0]);
+		if(!herd_rd_in(ls, cmd, rdPrev)|| g_an.flag_herdoc == 1)
 		{
-			an.exit_status = 1;
+			g_an.exit_status = 1;
 			return(0);
 		}
 		is_tr = 1;
@@ -83,6 +85,7 @@ int	get_rd(t_cmd *command, t_substruct **cmd, t_cmd *ls, int **fds)
 	if (((*cmd) && (*cmd)->type == rd_output)
 		|| ((*cmd) && (*cmd)->type == rd_output_append))
 	{
+		close(fds[ls->i][1]);
 		new = subc_quots((*cmd)->next->data);
 		if ((*cmd)->type == rd_output)
 		{
@@ -117,6 +120,8 @@ void	ft_free_matrix(int **str, int size)
 	i = 0;
 	while (i < size)
 	{
+		close(str[i][0]);
+		close(str[i][1]);
 		free (str[i]);
 		i++;
 	}
@@ -134,7 +139,7 @@ void	ft_creat_pipe(int size, int **fds)
 		if (pipe(fds[i]) == -1)
 		{
 			write(2, "error piping\n", 14);
-			an.exit_status = 1;
+			g_an.exit_status = 1;
 		}
 		i++;
 	}

@@ -6,7 +6,7 @@
 /*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/19 22:34:27 by araiteb           #+#    #+#             */
-/*   Updated: 2023/09/09 04:03:34 by araiteb          ###   ########.fr       */
+/*   Updated: 2023/09/16 02:20:30 by araiteb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ int	ft_check_fils(char *name_fd, int mode, int permession)
 				fl = open(name_fd, mode, permession);
 				if (fl == -1)
 				{
-					an.exit_status = 1;
+					g_an.exit_status = 1;
 					perror("open");
 				}
 			}
@@ -40,7 +40,7 @@ int	ft_check_fils(char *name_fd, int mode, int permession)
 		fl = open(name_fd, mode);
 		if (fl == -1)
 		{
-			an.exit_status = 1;
+			g_an.exit_status = 1;
 			perror("open");		
 		}
 	}

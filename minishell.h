@@ -6,7 +6,7 @@
 /*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/14 09:44:32 by araiteb           #+#    #+#             */
-/*   Updated: 2023/09/14 03:02:16 by araiteb          ###   ########.fr       */
+/*   Updated: 2023/09/16 03:31:09 by araiteb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,8 +30,8 @@
 #include<stdbool.h>
 #include <errno.h>
 
-# define DQUOTES 0
-# define SQUOTE 1
+# define DQUOTES 34
+# define SQUOTE 39
 
 typedef enum e_types
 {
@@ -88,7 +88,7 @@ typedef struct s_gvar
 	int flag_herdoc;
 }	t_gvar;
 
-extern t_gvar	an;
+extern t_gvar	g_an;
 
 // void increment_shlvl();
 
@@ -96,7 +96,7 @@ extern t_gvar	an;
 
 void sigint_herdoc(int sig);
 int	here_doc(char *tmps, char *end);
-char		**ft_split(const char *s, char c);
+char		**ft_split(char *s, char c);
 int			ft_check_fils(char *name_fd, int mode, int permession);
 int			ft_strncmp(const char *s1, const char *s2, size_t n);
 char		*ft_get_path(char *argv, char **env);
@@ -107,7 +107,6 @@ char		*ft_strdup(const char *s);
 char		*ft_substr(const char *s, unsigned int start, size_t len);
 void		print_cmds(t_cmd *ls);
 int			syntaxe_error(t_cmd *ls);
-// t_cmd		*ft_lstnew(char *cmd, char **env);
 t_cmd		*ft_lstnew(char *cmd);
 int			ft_lstsize(t_cmd *lst);
 t_cmd		*ft_lstlast(t_cmd *lst);
@@ -129,7 +128,7 @@ void		ft_free(char **str);
 int			ft_check_fils(char *name_fd, int mode, int permession);
 void		ft_execution(t_cmd *list, char **env);
 char		**__resize(char **Array, char *new);
-void    	ft_dup(t_cmd *ls, char **option, char **env);
+void    	ft_dup(t_cmd *ls, char **option, char **env, int **fds);
 void		ft_close(t_cmd *ls);
 void		ft_close_pipe(t_cmd *ls, int **fds);
 void		ft_free_matrix(int **str, int size);
@@ -157,7 +156,7 @@ int check_builtins(t_cmd *cmd, char **option, char **env);
 char 	*subc_quots(char *str);
 char	*ft_itoa(int n);
 char    *expand_ret(char *line, char **env);
-int expand_env_variable(char **option, char **env);
+void expand_env_variable(char **option, char **env);
 void 	option_cmd_quots(char **option);
 
 // char	*ft_itoa(int n);
@@ -174,4 +173,10 @@ int	valid_args(char *var);
 char	*str_sans_plus(char *str);
 void	export_new_var_in_env(char *str, char *var, char c, ssize_t index);
 void	message_error(char *s1, char *s2, char *s3);
+char	*get_str1(char *cmd, int *i);
+void	help_get_cmds(char *line, t_cmd **list);
+int	NonClosedQuotes(char *line);
+int	get_cmds(char *line, t_cmd **list);
+int 	check_linesps(char *line);
+int 	check_doll(char *str, char c);
 #endif

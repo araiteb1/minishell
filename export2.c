@@ -6,7 +6,7 @@
 /*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/13 03:35:16 by nait-ali          #+#    #+#             */
-/*   Updated: 2023/09/14 02:52:42 by araiteb          ###   ########.fr       */
+/*   Updated: 2023/09/16 02:20:30 by araiteb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ void	free_env_copie(t_environement *env)
 		free(tmp);
 		tmp = NULL;
 	}
-	an.exit_status = 0;
+	g_an.exit_status = 0;
 }
 
 void	print_environement(t_cmd *ls)
@@ -76,7 +76,7 @@ void	print_environement(t_cmd *ls)
 	t_environement	*env;
 	t_environement	*tmp;
 
-	env = env_copie(an.environement);
+	env = env_copie(g_an.environement);
 	sorting(env);
 	tmp = env;
 	while (env)
@@ -93,7 +93,7 @@ void	print_environement(t_cmd *ls)
 		env = env->next;
 	}
 	//khass nfreyi lenv_copie
-	an.exit_status = 0;
+	g_an.exit_status = 0;
 }
 
 char	*str_sans_plus(char *str)

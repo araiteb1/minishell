@@ -6,7 +6,7 @@
 /*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/03 18:32:22 by nait-ali          #+#    #+#             */
-/*   Updated: 2023/09/14 02:40:44 by araiteb          ###   ########.fr       */
+/*   Updated: 2023/09/16 02:20:30 by araiteb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,5 +58,5 @@ void	ft_echo(t_cmd *ls, char **option)
 
 	if (!var)
 		write(ls->fileout, "\n", 1);
-	an.exit_status = 0;
+	g_an.exit_status = 0;
 }

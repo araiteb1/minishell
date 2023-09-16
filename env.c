@@ -6,7 +6,7 @@
 /*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/03 18:32:29 by nait-ali          #+#    #+#             */
-/*   Updated: 2023/09/14 02:41:18 by araiteb          ###   ########.fr       */
+/*   Updated: 2023/09/16 02:20:30 by araiteb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,14 +25,14 @@ void	ft_env(t_cmd *cmd)
 	t_environement	*env;
 	char			*tmp;
 
-	env = an.environement;
+	env = g_an.environement;
 	if (cmd->s_substruct->next)
 	{
 		tmp = cmd->s_substruct->next->data;
 		if ((tmp[0] != '>') && (tmp[0] != '<' ))
 		{
 			message_error("env: ", tmp, ": No such file or directory\n");
-			an.exit_status = 127;
+			g_an.exit_status = 127;
 			return ;
 		}
 	}
@@ -42,5 +42,5 @@ void	ft_env(t_cmd *cmd)
 			print_env(env->cle, env->valeur, cmd);
 		env = env->next;
 	}
-	an.exit_status = 0;
+	g_an.exit_status = 0;
 }

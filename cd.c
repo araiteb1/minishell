@@ -6,7 +6,7 @@
 /*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/03 18:32:11 by nait-ali          #+#    #+#             */
-/*   Updated: 2023/09/14 02:40:08 by araiteb          ###   ########.fr       */
+/*   Updated: 2023/09/16 02:21:25 by araiteb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ char	*find_home(void)
 {
 	t_environement	*tmp;
 
-	tmp = an.environement;
+	tmp = g_an.environement;
 	while (tmp) 
 	{
 		if (strcmp(tmp->cle, "HOME") == 0)
@@ -24,7 +24,7 @@ char	*find_home(void)
 		tmp = tmp->next;
 	}
 	ft_putstr_fd("minishell: cd: HOME not set\n", 2);
-	an.exit_status = 1;
+	g_an.exit_status = 1;
 	return (NULL);
 }
 
@@ -33,7 +33,7 @@ void	search_pwd(char *pwd)
 	t_environement	*tmp;
 	char			*pwd_;
 
-	tmp = an.environement;
+	tmp = g_an.environement;
 	while (tmp)
 	{
 		if (!ft_strcmp(tmp->cle, "PWD"))
@@ -54,7 +54,7 @@ void	search_oldpwd(char *oldpwd)
 	char			*oldpwd_;
 	char			*var;
 
-	tmp = an.environement;
+	tmp = g_an.environement;
 	var = NULL;
 	while (tmp)
 	{
@@ -77,7 +77,7 @@ void	change_directories(char *pwd)
 	t_environement	*tmp;
 	char			*tt;
 
-	tmp = an.environement;
+	tmp = g_an.environement;
 	while (tmp)
 	{
 		if (ft_strcmp(tmp->cle, "PWD") == 0)
@@ -104,10 +104,10 @@ void	ft_cd(t_cmd *cmd)
 		to = var->data;
 	if (!chedir_error(to)) 
 		return ;
-	to = getcwd(an.pwd, PATH_MAX);
+	to = getcwd(g_an.pwd, PATH_MAX);
 	if (!cd_not_exist_directory(to))
 		return ;
 	else 
 		change_directories(to);
-	an.exit_status = 0;
+	g_an.exit_status = 0;
 }

@@ -6,7 +6,7 @@
 /*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/06 14:41:59 by araiteb           #+#    #+#             */
-/*   Updated: 2023/09/14 04:01:33 by araiteb          ###   ########.fr       */
+/*   Updated: 2023/09/16 02:20:30 by araiteb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 void	sigint_herdoc(int sig)
 {
 	(void)sig;
-	an.flag_herdoc = 1;
+	g_an.flag_herdoc = 1;
 	close (0);
 }
 
@@ -41,7 +41,7 @@ int	here_doc(char *tmps, char *end)
 		if (!str)
 			break ;
 	}
-	if (an.flag_herdoc == 1)
+	if (g_an.flag_herdoc == 1)
 		dup2 (fd, 0);
 	close (fd);
 	return (fl);

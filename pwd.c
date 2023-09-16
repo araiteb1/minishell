@@ -6,7 +6,7 @@
 /*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/03 18:32:47 by nait-ali          #+#    #+#             */
-/*   Updated: 2023/09/14 03:03:39 by araiteb          ###   ########.fr       */
+/*   Updated: 2023/09/16 02:20:30 by araiteb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ void	ft_pwd(t_cmd *cmd)
 	t_environement	*tmp;
 	char			*var;
 
-	tmp = an.environement;
+	tmp = g_an.environement;
 	var = NULL;
 	while (tmp)
 	{
@@ -32,5 +32,5 @@ void	ft_pwd(t_cmd *cmd)
 	}
 	ft_putstr_fd(getcwd(var, PATH_MAX), cmd->fileout);
 	ft_putstr_fd("\n", cmd->fileout);
-	an.exit_status = 0;
+	g_an.exit_status = 0;
 }
