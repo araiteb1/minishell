@@ -6,7 +6,7 @@
 /*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/13 20:01:36 by nait-ali          #+#    #+#             */
-/*   Updated: 2023/09/16 02:20:30 by araiteb          ###   ########.fr       */
+/*   Updated: 2023/09/17 04:19:29 by araiteb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,14 @@
 
 int	chedir_error(char *to)
 {
+	char *tmp;
 	if (chdir(to)) 
 	{
+		tmp = ft_strjoin(to, ": ");
+		
 		ft_putstr_fd("minishell: cd: ", 2);
-		ft_putstr_fd(ft_strjoin(to, ": "), 2);
+		ft_putstr_fd(tmp, 2);
+		free(tmp);
 		perror("");
 		g_an.exit_status = 1;
 		return (0);

@@ -6,7 +6,7 @@
 /*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/03 18:32:22 by nait-ali          #+#    #+#             */
-/*   Updated: 2023/09/16 02:20:30 by araiteb          ###   ########.fr       */
+/*   Updated: 2023/09/16 23:55:18 by araiteb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,9 +43,15 @@ void	ft_echo(t_cmd *ls, char **option)
 	i = 1;
     while (option[i] && cmd && check_new_line(option[i]) && ls->s_substruct->next)
 	{
+		if (ft_strlen(cmd->data))
+		{
 		var = 1;
        	cmd = cmd->next;
 		i++;
+			
+		}
+		else
+			break ;
 	}
 	while (cmd && option[i] && (option[i][0] != '<' && option[i][0] != '>'))
 	{

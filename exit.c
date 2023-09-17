@@ -6,7 +6,7 @@
 /*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/03 18:32:33 by nait-ali          #+#    #+#             */
-/*   Updated: 2023/09/16 02:20:30 by araiteb          ###   ########.fr       */
+/*   Updated: 2023/09/17 03:49:31 by araiteb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,7 @@ int	correct_arg(char *num)
 void	normal_exit(void)
 {
 	ft_putstr_fd("exit\n", 2);
+	free_environement();
 	g_an.exit_status = 0;
 	exit(0);
 }
@@ -42,6 +43,7 @@ void	ft_exit(t_cmd *lst)
 		normal_exit();
 	else if (!correct_arg(lst->s_substruct->next->data))
 	{
+		free_environement();
 		message_error("exit \n", "minishell : exit: ", \
 		lst->s_substruct->next->data);
 		ft_putstr_fd(": numeric argument required\n", 2);
@@ -57,6 +59,7 @@ void	ft_exit(t_cmd *lst)
 	}
 	else
 	{
+		free_environement();
 		ft_putstr_fd("exit\n", 2);
 		exit(ft_atoi((lst->s_substruct->next->data)));
 	}

@@ -6,12 +6,12 @@
 #    By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/07/14 09:44:35 by araiteb           #+#    #+#              #
-#    Updated: 2023/09/16 02:16:25 by araiteb          ###   ########.fr        #
+#    Updated: 2023/09/17 00:37:06 by araiteb          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 CC := cc 
-CFLAGS := -Wall -Wextra -Werror -fsanitize=address -g 
+CFLAGS := -Wall -Wextra -Werror -g 
 INCLUDE := minishell.h
 SRCS := main.c  execution2.c fonction_libft.c char_size.c ft_split.c list.c ft_strtrim.c \
 		syntaxe.c free.c execution.c file.c list2.c fonction_here_doc.c exit.c echo.c pwd.c \

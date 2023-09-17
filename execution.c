@@ -6,7 +6,7 @@
 /*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/17 04:13:02 by araiteb           #+#    #+#             */
-/*   Updated: 2023/09/16 07:26:39 by araiteb          ###   ########.fr       */
+/*   Updated: 2023/09/17 08:22:34 by araiteb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,10 +28,7 @@ int	get_ev(char **env)
 
 void	ft_dup(t_cmd *ls, char **option, char **env, int **fds)
 {
-	dup2 (ls->filein, 0);
-	dup2 (ls->fileout, 1);
-	if (fds)
-			ft_free_matrix(fds, ft_lstsize(ls) - 1);
+	(void)fds;
 	ft_close(ls);
 	if(option)
 		expand_env_variable(option, env);
@@ -77,6 +74,12 @@ void	exec_chile(char **option, char **env, t_cmd *list)
 	char	*path;
 	char *str;
 	(void)list;
+	if(!ft_strcmp(option[0], " "))
+	{
+		free_list(&list);
+		ft_free(option);
+		exit(0);
+	}
 	path = ft_get_path(option[0], env);
 	if (execve (path, option, env) == -1)
 	{
@@ -147,14 +150,15 @@ char    *ret_expand_val(char *str, char **env)
 
 char    *option_expand(char *line, char **env)
 {
-    int i;
-    int size = 0;
+    int 	i;
+    int 	size = 0;
 	char 	*str = NULL;
-    char *ret =  NULL;
-	char *ret1= NULL;
-	char *value = NULL;
-	int start;
+    char	*ret =  NULL;
+	char	*ret1= NULL;
+	char	*value = NULL;
+	int 	start;
 	char	*tmp = NULL;
+
 	i = 0;
 	while(line && line[i])
 	{
@@ -178,19 +182,28 @@ char    *option_expand(char *line, char **env)
 		ret1 = ft_substr(line, start, size);
 		if(!ft_strncmp(ret1, "?",ft_strlen(ret1)))
 		{
+			ft_free_str(ret1);
 			str = ft_itoa(g_an.exit_status);
 			return (str);
-			
 		}
 		if(ret1 && !check_doll(ret1, '$'))
 		{
 			value = ret_expand_val(ret1, env);
 			tmp = str;
 			str = ft_strjoin(ret, value);
+			free (value);
+			value = str;
 			str = ft_strjoin(tmp, str);
+			free (value);
 		}
+		ft_free_str(tmp);
+		// ft_free_str(value);
+		ft_free_str(ret1);
+		ft_free_str(ret);
 	}
-    return(ft_strtrim(str," "));
+	tmp = ft_strtrim(str," ");
+	free (str);
+    return(tmp);
 }
 
 void expand_env_variable(char **option, char **env)
@@ -206,23 +219,11 @@ void expand_env_variable(char **option, char **env)
 		str = ft_strdup(option[i]);
 		j = 0;
 		if (check_doll(str, '$') == 1)
+		{
+			free(option[i]);
 			option[i] = option_expand(str, env);
-		i++;
-	}
-}
-
-void 	option_cmd_quots(char **option)
-{
-	int i = 0;
-	char *str = NULL;
-	char *new = NULL;
-	if(!option || !ft_strcmp(option[i], " "))
-		return ;
-	while(option[i])
-	{
-		str = ft_strdup(option[i]);
-		new = subc_quots(str);
-		option[i] = new;
+		}
+		ft_free_str(str);
 		i++;
 	}
 }
@@ -270,33 +271,49 @@ void	ft_execution(t_cmd *list, char **env)
 		}
 		if (!tmp->prev && !tmp->next && check_builtins(tmp, option, env))
 			return ;
-		pd[i] = fork();
-		if (pd[i] == -1)
-		{
-			write (2, "error\n", 7);
-			g_an.exit_status = 1;
-		}
-		if (pd[i] == 0)
-		{
-			signal(SIGQUIT,SIG_DFL);
-			signal(SIGINT,SIG_DFL);
-			ft_dup (tmp, option, env, fds);
-		}
+		pd[i] = -1;
 		if(option)
+		{
+			pd[i] = fork();
+			if (pd[i] == -1)
+			{
+				write (2, "error\n", 7);
+				g_an.exit_status = 1;
+			}
+			if (pd[i] == 0)
+			{
+				signal(SIGQUIT,SIG_DFL);
+				signal(SIGINT,SIG_DFL);
+				dup2 (tmp->filein, 0);
+				dup2 (tmp->fileout, 1);
+				if(fds)
+					ft_free_matrix(fds, ft_lstsize(list) - 1);
+				ft_dup (tmp, option, env, fds);
+			}
 			ft_free(option);
+		}
 		ft_close(tmp);
 		if (tmp)
 			tmp = tmp->next;
 		i++;
 	}
+	// if(fds)
+	// 	ft_free_matrix(fds, ft_lstsize(list) - 1);
 	i = 0;
-	int status;
+	int status = 0;
 	while (i < ft_lstsize(list))
 	{
-		waitpid(pd[i], &status, 0);
+		if(pd[i] != -1)
+			waitpid(pd[i], &status, 0);
 		i++;
     }
-	if(fds)
-		ft_free_matrix(fds, ft_lstsize(list) - 1);
+	i = 0;
+	while (i < ft_lstsize(list))
+	{
+		free (fds[i]);
+		i++;
+    }
+	free (fds);
+	free(pd);
 	signals_in_child_process(status);
 }

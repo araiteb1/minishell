@@ -6,7 +6,7 @@
 /*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/14 09:44:32 by araiteb           #+#    #+#             */
-/*   Updated: 2023/09/16 03:31:09 by araiteb          ###   ########.fr       */
+/*   Updated: 2023/09/17 07:27:52 by araiteb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,7 @@
 
 # define DQUOTES 34
 # define SQUOTE 39
+#define 	LINE "minishell:$ "
 
 typedef enum e_types
 {
@@ -65,12 +66,6 @@ typedef struct s_cmd{
 	struct s_cmd	*next;
 	struct s_cmd	*prev;
 }	t_cmd;
-typedef struct s_expand{
-	
-	int flag;
-	char 	*res;
-	char 	*tmp;
-} t_expand;
 typedef struct s_environement
 {
 	char			*env;
@@ -84,16 +79,16 @@ typedef struct s_gvar
 	int		exit_status;
 	t_environement	*environement;
 	char *pwd;
+	char *pp;
 	int flag_signal;
 	int flag_herdoc;
 }	t_gvar;
 
 extern t_gvar	g_an;
 
-// void increment_shlvl();
-
 /*-----function_exect_par------*/
 
+void free_node(t_cmd **list);
 void sigint_herdoc(int sig);
 int	here_doc(char *tmps, char *end);
 char		**ft_split(char *s, char c);
@@ -104,7 +99,7 @@ int			get_ev(char **env);
 size_t		ft_strlen(const char *str);
 char		*ft_strjoin(char *s1, char *s2);
 char		*ft_strdup(const char *s);
-char		*ft_substr(const char *s, unsigned int start, size_t len);
+char		*ft_substr(char *s, unsigned int start, size_t len);
 void		print_cmds(t_cmd *ls);
 int			syntaxe_error(t_cmd *ls);
 t_cmd		*ft_lstnew(char *cmd);
@@ -119,7 +114,7 @@ void		n_lstadd_back(t_substruct **lst, t_substruct *new);
 char		*get_quotes(char *cmd, int *start, int type);
 char		*get_redirection(char *cmd, int *start);
 char		*get_command(char *cmd, int *start);
-char		*ft_strtrim(char const *s1, char const *set);
+char		*ft_strtrim(char *s1, char *set);
 void		free_sublist(t_substruct **substruct);
 void		free_list(t_cmd **substruct);
 void		exec_chile(char **option, char **env, t_cmd *list);
@@ -158,8 +153,6 @@ char	*ft_itoa(int n);
 char    *expand_ret(char *line, char **env);
 void expand_env_variable(char **option, char **env);
 void 	option_cmd_quots(char **option);
-
-// char	*ft_itoa(int n);
 void init_signals(void);
 void signals_in_child_process(int status);
 char **get_env_values(t_environement *env_list);
@@ -179,4 +172,7 @@ int	NonClosedQuotes(char *line);
 int	get_cmds(char *line, t_cmd **list);
 int 	check_linesps(char *line);
 int 	check_doll(char *str, char c);
+void 	ft_free_str(char *str);
+int	is_alpha(char c);
+void	free_env_values(char **env_values);
 #endif

@@ -6,7 +6,7 @@
 /*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/14 11:45:15 by araiteb           #+#    #+#             */
-/*   Updated: 2023/09/12 11:31:28 by araiteb          ###   ########.fr       */
+/*   Updated: 2023/09/17 01:22:37 by araiteb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,7 +91,7 @@ char	*ft_strdup(const char *s)
 }
 
 /*--substr----*/
-char	*ft_substr(const char *s, unsigned int start, size_t len)
+char	*ft_substr(char *s, unsigned int start, size_t len)
 {
 	char	*new;
 	size_t	lens;

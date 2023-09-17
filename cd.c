@@ -6,7 +6,7 @@
 /*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/03 18:32:11 by nait-ali          #+#    #+#             */
-/*   Updated: 2023/09/16 02:21:25 by araiteb          ###   ########.fr       */
+/*   Updated: 2023/09/17 04:55:15 by araiteb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ char	*find_home(void)
 	tmp = g_an.environement;
 	while (tmp) 
 	{
-		if (strcmp(tmp->cle, "HOME") == 0)
+		if (ft_strcmp(tmp->cle, "HOME") == 0)
 			return (tmp->valeur);
 		tmp = tmp->next;
 	}
@@ -43,6 +43,7 @@ void	search_pwd(char *pwd)
 			free(tmp->env);
 			pwd_ = ft_strjoin(tmp->cle, "=");
 			tmp->env = ft_strjoin(pwd_, tmp->valeur);
+			free(pwd_);
 		}
 		tmp = tmp->next;
 	}
@@ -105,6 +106,8 @@ void	ft_cd(t_cmd *cmd)
 	if (!chedir_error(to)) 
 		return ;
 	to = getcwd(g_an.pwd, PATH_MAX);
+	if (to)
+		g_an.pp = to;
 	if (!cd_not_exist_directory(to))
 		return ;
 	else 

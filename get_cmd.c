@@ -6,49 +6,41 @@
 /*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/16 02:15:44 by araiteb           #+#    #+#             */
-/*   Updated: 2023/09/16 04:21:25 by araiteb          ###   ########.fr       */
+/*   Updated: 2023/09/17 08:00:24 by araiteb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-// char    *lineQuo(char *line)
-// {
-//     int i;
-//     int size;
-//     int start;
-//     char *resul;
-
-    
-    
-// }
-
 void	help_get_cmds(char *line, t_cmd **list)
 {
 	char	**str;
-    // char *str1;
 	int		i;
-	t_cmd	*new;
 	char	*cmd;
+	char	*tmp;
+
+	tmp = ft_strtrim(line, " ");
 
 	str = ft_split(line, '|');
-	i = 0;
-	if (!str || strcmp(line, "|") == 0
-		|| (ft_strtrim(line, " ")[0] == '|' && ft_strlen(line) > 1))
+	i=0;
+	if (!str || ft_strcmp(line, "|") == 0
+		|| (tmp[0] == '|' && ft_strlen(line) > 1))
 	{
 		g_an.exit_status = 258;
 		write (2, "minishell: syntax error near unexpected token `|'\n", 51);
 		return ;
 	}
+	free (tmp);
 	i = 0;
-	while (str[i])
+	while (str[i] && strcmp(str[i], " "))
 	{
 		cmd = ft_strtrim(str[i], " \t");
-		new = ft_lstnew(cmd);
-		ft_lstadd_back(list, new);
+		ft_lstadd_back(list, ft_lstnew(cmd));
 		free (cmd);
 		i++;
 	}
+	// free(line);
+	ft_free(str);
 }
 
 int	NonClosedQuotes(char *line)
@@ -79,16 +71,21 @@ int	NonClosedQuotes(char *line)
 int	get_cmds(char *line, t_cmd **list)
 {
 	int		i;
-
+	// char 	*str;
 	i = 0;
-	if (!check_linesps(line) || NonClosedQuotes(line) )
+	if (!check_linesps(line) || NonClosedQuotes(line))
 		return (0);
-	if (line[ft_strlen(line) - 1] == '|')
-		line = ft_strjoin(line, " newline");
+	// if (line[ft_strlen(line) - 1] == '|')
+	// {
+	// 	str = line;
+	// 	line = ft_strjoin(str, " newline");
+	// 	free(str);
+	// }
 	while (line[i])
 	{
 		if (line[i] == '|' && line[i + 1] == '|' && line[i + 2] == '|')
 		{
+			free(line);
 			g_an.exit_status = 258;
 			write (2, "minishell: syntax error near unexpected token `||'\n", 51);
 			return (0);
@@ -96,5 +93,6 @@ int	get_cmds(char *line, t_cmd **list)
 		i++;
 	}
 	help_get_cmds(line, list);
+	free(line);
 	return (1);
 }

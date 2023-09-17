@@ -6,7 +6,7 @@
 /*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/15 21:27:51 by araiteb           #+#    #+#             */
-/*   Updated: 2023/09/16 02:20:30 by araiteb          ###   ########.fr       */
+/*   Updated: 2023/09/17 04:36:57 by araiteb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,62 +28,12 @@ char	*get_redirection(char *cmd, int *start)
 	ret = ft_substr(cmd, i, size);
 	return (ret);
 }
-char *supp_char(char *str, char c)
-{
-	char 	*ret;
-	int i = 0;
-	int j = 0;
 
-	ret = malloc(sizeof(char) * ft_strlen(str) + 1);
-	while(str[i])
-	{
-		if(str[i] == c)
-			i++;
-		ret[j] = str[i];
-		j++;
-		i++;
-	}
-	ret[j] = '\0';
-	// printf("ret :: %s\n", ret);
-	// exit(0);
-	return(ret);
-}
 int	ft_isalpha(int c)
 {
 	if (!(c >= 97 && c <= 122) && !(c >= 65 && c <= 90))
 		return (0);
 	return (1);
-}
-
-char	*get_quotes(char *cmd, int *start, int type)
-{
-	char	*quot;
-	int		size;
-	int		i;
-	char	quote;
-
-	if (type == DQUOTES)
-		quote = '"';
-	else
-		quote = '\'';
-	i = *start;
-	size = 0;
-	// if (cmd[(*start) + 1] && cmd[(*start) + 1] == type)
-	// 	return (NULL);
-	// printf("char :: [%c]\n", cmd[*start]);
-	while (cmd[*start])
-	{
-		if(cmd[*start] == quote && (cmd[*start + 1] == ' ' || cmd[*start + 1] == '\0') )
-			break;
-		size++;
-		(*start)++;
-	}
-	if (size == 0)
-		return (NULL);
-	// printf("quot  :: %s\n",ft_substr(cmd, i, size));
-	quot = supp_char(ft_substr(cmd, i, size), quote);
-	// printf("quot  :: %s\n",quot);
-	return (quot);
 }
 
 char	*get_command(char *cmd, int *start)
@@ -97,6 +47,7 @@ char	*get_command(char *cmd, int *start)
 	i = *start;
 	size = 0;
 	rest = NULL;
+	ret = NULL;
 	while (cmd[*start] && cmd[*start] != ' '
 		&& cmd[*start] != '>' && cmd[*start] != '<'
 		&& cmd[*start] != DQUOTES && cmd[*start] != SQUOTE)
@@ -111,6 +62,8 @@ char	*get_command(char *cmd, int *start)
 		ret = ft_strjoin(tmp, rest);
 	else
 		return (tmp);
+	ft_free_str(rest);
+	ft_free_str(tmp);
 	return (ret);
 }
 

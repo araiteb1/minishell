@@ -6,7 +6,7 @@
 /*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/06 02:48:32 by araiteb           #+#    #+#             */
-/*   Updated: 2023/09/16 02:20:30 by araiteb          ###   ########.fr       */
+/*   Updated: 2023/09/17 08:02:01 by araiteb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@ int	herd_rd_in(t_cmd *ls, t_substruct **cmd, char *rdPrev)
 			(*cmd) = (*cmd)->next;
 		new = subc_quots((*cmd)->data);
 		ls->filein = here_doc("tmp", new);
+		ft_free_str(new);
 		ls->filein = open("tmp", O_RDONLY, 0644);
 	}
 	else
@@ -41,7 +42,13 @@ int	herd_rd_in(t_cmd *ls, t_substruct **cmd, char *rdPrev)
 		else
 		{
 			ls->filein = open(new, O_RDONLY, 0644);
+			if(ls->filein == -1)
+			{
+				perror("open");
+				return(0);
+			}
 		}
+		ft_free_str(new);
 	}
 	return(1);
 }
@@ -59,7 +66,7 @@ char *getLastCmd(t_cmd *cmd)
 		if (subs->prev && (subs->prev->type == rd_output || subs->prev->type == rd_output_append))
 			return(subs->data);
 	}
-	return NULL;
+	return (NULL);
 }
 
 int	get_rd(t_cmd *command, t_substruct **cmd, t_cmd *ls, int **fds)
@@ -95,9 +102,13 @@ int	get_rd(t_cmd *command, t_substruct **cmd, t_cmd *ls, int **fds)
 		else
 			ls->fileout = ft_check_fils(new,
 					(O_RDWR | O_CREAT | O_APPEND), 0644);
+		if(ls->fileout == -1)
+			return(0);
 		is_tr = 1;
 		(*cmd) = (*cmd)->next;
 	}
+	ft_free_str(rdPrev);
+	ft_free_str(new);
 	if (!is_tr && ls && ls->next)
 	{
 		ls->fileout = fds[ls->i][1];
@@ -138,6 +149,7 @@ void	ft_creat_pipe(int size, int **fds)
 		fds[i] = malloc(sizeof(int) * 2);
 		if (pipe(fds[i]) == -1)
 		{
+			ft_free_matrix(fds, i);
 			write(2, "error piping\n", 14);
 			g_an.exit_status = 1;
 		}

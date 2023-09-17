@@ -6,7 +6,7 @@
 /*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/13 03:35:16 by nait-ali          #+#    #+#             */
-/*   Updated: 2023/09/16 02:20:30 by araiteb          ###   ########.fr       */
+/*   Updated: 2023/09/17 01:11:26 by araiteb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,7 +92,7 @@ void	print_environement(t_cmd *ls)
 		ft_putstr_fd("\n", ls->fileout);
 		env = env->next;
 	}
-	//khass nfreyi lenv_copie
+	free_env_copie(tmp);
 	g_an.exit_status = 0;
 }
 

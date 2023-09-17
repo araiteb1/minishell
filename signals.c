@@ -6,7 +6,7 @@
 /*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/13 00:24:01 by nait-ali          #+#    #+#             */
-/*   Updated: 2023/09/16 02:20:30 by araiteb          ###   ########.fr       */
+/*   Updated: 2023/09/16 23:49:48 by araiteb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,8 +40,6 @@ void	signals_in_child_process(int status)
 			ft_putstr_fd("\\Quit: 3\n", 1);
 		if (WTERMSIG(status) == SIGINT)
 			ft_putstr_fd("\n", 1);
-		if (g_an.flag_herdoc == 0)
-			return ;
 		g_an.exit_status = WTERMSIG(status) + 128;
 	}
 	else 

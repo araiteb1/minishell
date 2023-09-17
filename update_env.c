@@ -6,7 +6,7 @@
 /*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/03 18:33:06 by nait-ali          #+#    #+#             */
-/*   Updated: 2023/09/16 02:20:30 by araiteb          ###   ########.fr       */
+/*   Updated: 2023/09/16 23:42:51 by araiteb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,6 +68,7 @@ char	**get_env_values(t_environement *env_list)
 	t_environement		*current;
 	char				**env_values;
 	int					i;
+	char 				*tmp;
 
 	current = env_list;
 	count = 0;
@@ -83,8 +84,10 @@ char	**get_env_values(t_environement *env_list)
 	i = 0;
 	while (current)
 	{
-		env_values[i] = ft_strjoin(ft_strjoin(current->cle, "="), \
+		tmp = ft_strjoin(current->cle, "=");
+		env_values[i] = ft_strjoin(tmp, \
 		current->valeur);
+		free(tmp);
 		i++;
 		current = current->next;
 	}

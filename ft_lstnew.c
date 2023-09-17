@@ -6,7 +6,7 @@
 /*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/14 01:04:56 by araiteb           #+#    #+#             */
-/*   Updated: 2023/09/16 02:30:36 by araiteb          ###   ########.fr       */
+/*   Updated: 2023/09/17 07:48:28 by araiteb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,14 +28,7 @@ void	error_str(char *str)
 	}
 }
 
-int __isAlpha(char c)
-{
-	if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || c == '-')
-		return (1);
-	return (0);
-}
-
-char *getInsideQuotes(char *cmd, int *i, int type)
+char	*get_inside_quotes(char *cmd, int *i, int type)
 {
 	char	*str;
 	int		size;
@@ -46,26 +39,26 @@ char *getInsideQuotes(char *cmd, int *i, int type)
 	while (cmd[*i])
 	{
 		if (cmd[*i] == type)
-			break;
+			break ;
 		size++;
 		(*i)++;
 	}
 	if (size == 0)
-		return NULL;
+		return (NULL);
 	str = ft_substr(cmd, start, size);
 	return (str);
 }
 
-char *getOutsideQuotes(char *cmd, int *i)
+char	*get_outside_quotes(char *cmd, int *i)
 {
 	char	*rest;
 	int		start;
 	int		size;
-	
+
 	rest = NULL;
 	size = 0;
 	start = *i;
-	while (cmd[*i] && __isAlpha(cmd[*i]))
+	while (cmd[*i] && is_alpha(cmd[*i]))
 	{
 		size++;
 		(*i)++;
@@ -93,22 +86,19 @@ char	*get_str1(char *cmd, int *i)
 			if (cmd[*i] == DQUOTES)
 				type = DQUOTES;
 			(*i)++;
-			str = getInsideQuotes(cmd, i, type);
+			str = get_inside_quotes(cmd, i, type);
 			(*i)++;
 		}
-		if (cmd[*i] && __isAlpha(cmd[*i]))
-			rest = getOutsideQuotes(cmd, i);
+		if (cmd[*i] && is_alpha(cmd[*i]))
+			rest = get_outside_quotes(cmd, i);
 		tmp = ft_strjoin(str, rest);
+		ft_free_str(str);
 		result = ft_strjoin(result, tmp);
-		if (rest)
-		{
-			free (rest);
-			rest = NULL;
-		}
+		free(tmp);
+		ft_free_str(rest);
 	}
 	return (result);
 }
-
 
 char	*get_str2(char *cmd, int *i)
 {
@@ -137,6 +127,7 @@ void	init_list(t_cmd **l, char *cmd)
 t_cmd	*ft_lstnew(char *cmd)
 {
 	t_cmd	*l;
+	t_substruct *new;
 	char	*str;
 	int		i;
 
@@ -155,9 +146,13 @@ t_cmd	*ft_lstnew(char *cmd)
 		else
 			str = get_command(cmd, &i);
 		if (str)
-			n_lstadd_back(&(l->s_substruct), n_lstnew(str));
+		{
+			new = n_lstnew(str);
+			n_lstadd_back(&(l->s_substruct), new);
+		}
 		while (cmd[i] == ' ')
 			i++;
+		ft_free_str(str);
 	}
 	init_list(&l, cmd);
 	return (l);
