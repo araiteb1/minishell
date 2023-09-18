@@ -6,7 +6,7 @@
 /*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/03 18:32:47 by nait-ali          #+#    #+#             */
-/*   Updated: 2023/09/17 03:53:25 by araiteb          ###   ########.fr       */
+/*   Updated: 2023/09/18 02:31:00 by araiteb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,6 @@ static int find_pwd_in_env(t_environement *tmp, t_cmd *cmd)
     {
         if (!ft_strcmp(tmp->cle, "PWD"))
         {
-            printf("pwd val :%s \n", tmp->valeur);
             ft_putstr_fd(tmp->valeur, cmd->fileout);
             ft_putstr_fd("\n", cmd->fileout);
             return 0;

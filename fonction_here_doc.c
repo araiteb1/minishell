@@ -6,7 +6,7 @@
 /*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/06 14:41:59 by araiteb           #+#    #+#             */
-/*   Updated: 2023/09/16 02:20:30 by araiteb          ###   ########.fr       */
+/*   Updated: 2023/09/17 22:55:48 by araiteb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ int	here_doc(char *tmps, char *end)
 	str = readline("> ");
 	if(!ft_strcmp(end, " "))
 		write(fl, str, ft_strlen(str));
-	while (str && ft_strcmp(str, end) && ft_strcmp(end, " "))
+	while (str && ft_strcmp(str, end))
 	{
 		write(fl, str, ft_strlen(str));
 		write(fl, "\n", 1);
@@ -39,8 +39,12 @@ int	here_doc(char *tmps, char *end)
 			free (str);
 		str = readline("> ");
 		if (!str)
+		{
+			ft_free_str(str);
 			break ;
+		}
 	}
+	free (str);
 	if (g_an.flag_herdoc == 1)
 		dup2 (fd, 0);
 	close (fd);

@@ -6,7 +6,7 @@
 /*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/14 09:44:32 by araiteb           #+#    #+#             */
-/*   Updated: 2023/09/17 07:27:52 by araiteb          ###   ########.fr       */
+/*   Updated: 2023/09/18 06:04:04 by araiteb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,15 @@ typedef struct s_subStruct
 	struct s_subStruct	*prev;
 }	t_substruct;
 
+typedef struct s_expand{
+	int size;
+	int start;
+	char	*str;
+	char *ret;
+	char *ret1;
+	char *value;
+	
+}t_expand;
 typedef struct s_cmd{
 	char			*data;
 	int				i;
@@ -73,6 +82,16 @@ typedef struct s_environement
 	char			*valeur;
 	struct s_environement	*next;
 }	t_environement;
+
+typedef struct s_varn
+{
+	char		**option;
+	int			**fds;
+	pid_t		*pd;
+	int size;
+	int			i;
+}t_varn;
+
 
 typedef struct s_gvar
 {
@@ -123,7 +142,7 @@ void		ft_free(char **str);
 int			ft_check_fils(char *name_fd, int mode, int permession);
 void		ft_execution(t_cmd *list, char **env);
 char		**__resize(char **Array, char *new);
-void    	ft_dup(t_cmd *ls, char **option, char **env, int **fds);
+void    	ft_dup(t_cmd *ls, char **option, char **env);
 void		ft_close(t_cmd *ls);
 void		ft_close_pipe(t_cmd *ls, int **fds);
 void		ft_free_matrix(int **str, int size);
@@ -173,6 +192,10 @@ int	get_cmds(char *line, t_cmd **list);
 int 	check_linesps(char *line);
 int 	check_doll(char *str, char c);
 void 	ft_free_str(char *str);
-int	is_alpha(char c);
+int		is_alpha(char c);
+int     ft_size_nam(char *str, char c);
 void	free_env_values(char **env_values);
+char    *ret_expand_val(char *str, char **env);
+void 	expand_env_variable(char **option, char **env);
+char    *option_expand(char *line, char **env);
 #endif

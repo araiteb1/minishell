@@ -6,7 +6,7 @@
 /*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/06 02:48:32 by araiteb           #+#    #+#             */
-/*   Updated: 2023/09/17 08:02:01 by araiteb          ###   ########.fr       */
+/*   Updated: 2023/09/18 04:31:54 by araiteb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,8 +22,8 @@ int	herd_rd_in(t_cmd *ls, t_substruct **cmd, char *rdPrev)
 			(*cmd) = (*cmd)->next;
 		new = subc_quots((*cmd)->data);
 		ls->filein = here_doc("tmp", new);
-		ft_free_str(new);
 		ls->filein = open("tmp", O_RDONLY, 0644);
+		free(new);
 	}
 	else
 	{
@@ -63,7 +63,7 @@ char *getLastCmd(t_cmd *cmd)
 		subs = cm->s_substruct;
 		while (subs->next)
 			subs = subs->next;
-		if (subs->prev && (subs->prev->type == rd_output || subs->prev->type == rd_output_append))
+		if (subs->prev && (subs->prev->type == rd_output || (subs->prev->prev && subs->prev->type == rd_output && subs->prev->prev->type == rd_output)))
 			return(subs->data);
 	}
 	return (NULL);
@@ -107,7 +107,6 @@ int	get_rd(t_cmd *command, t_substruct **cmd, t_cmd *ls, int **fds)
 		is_tr = 1;
 		(*cmd) = (*cmd)->next;
 	}
-	ft_free_str(rdPrev);
 	ft_free_str(new);
 	if (!is_tr && ls && ls->next)
 	{

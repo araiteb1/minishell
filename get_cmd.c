@@ -6,7 +6,7 @@
 /*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/16 02:15:44 by araiteb           #+#    #+#             */
-/*   Updated: 2023/09/17 08:00:24 by araiteb          ###   ########.fr       */
+/*   Updated: 2023/09/18 06:21:44 by araiteb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,21 +71,20 @@ int	NonClosedQuotes(char *line)
 int	get_cmds(char *line, t_cmd **list)
 {
 	int		i;
-	// char 	*str;
+	char 	*str;
 	i = 0;
 	if (!check_linesps(line) || NonClosedQuotes(line))
 		return (0);
-	// if (line[ft_strlen(line) - 1] == '|')
-	// {
-	// 	str = line;
-	// 	line = ft_strjoin(str, " newline");
-	// 	free(str);
-	// }
+	if (line[ft_strlen(line) - 1] == '|')
+	{
+		str = line;
+		line = ft_strjoin(str, " newline");
+		free(str);
+	}
 	while (line[i])
 	{
 		if (line[i] == '|' && line[i + 1] == '|' && line[i + 2] == '|')
 		{
-			free(line);
 			g_an.exit_status = 258;
 			write (2, "minishell: syntax error near unexpected token `||'\n", 51);
 			return (0);

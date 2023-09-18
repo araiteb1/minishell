@@ -6,7 +6,7 @@
 /*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/14 09:44:28 by araiteb           #+#    #+#             */
-/*   Updated: 2023/09/17 07:25:17 by araiteb          ###   ########.fr       */
+/*   Updated: 2023/09/18 06:39:51 by araiteb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@ t_gvar g_an;
 int 	check_linesps(char *line)
 {
 	int i = 0;
+
 	while (line[i])
 	{
 		if (line[i] != ' ' && line[i] != '\t' && line[i] != '\f'
@@ -87,11 +88,17 @@ int	main(int ac, char **av, char **env)
 			add_history(line);
 			if (get_cmds(line, &list) && syntaxe_error(list))
 				ft_execution(list, ptr);
+			// else if(!check_linesps(line))
+			// 	free(line);
 			free_env_values(ptr);
 			free_list (&list);
-			free(list);
-			// free(line);
 		}
+		else
+		{
+			free(line);
+			free_env_values(ptr);
+		}
+			
 	}
 	free_environement();
 	return (0);

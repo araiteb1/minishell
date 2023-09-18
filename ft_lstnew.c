@@ -6,7 +6,7 @@
 /*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/14 01:04:56 by araiteb           #+#    #+#             */
-/*   Updated: 2023/09/17 07:48:28 by araiteb          ###   ########.fr       */
+/*   Updated: 2023/09/18 06:16:10 by araiteb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,12 +124,25 @@ void	init_list(t_cmd **l, char *cmd)
 	(*l)->i = 0;
 }
 
+char 	*separt_cond(char *cmd, int *i)
+{
+	char	*str;
+
+	if (cmd[*i] == '\'' || cmd[*i] == '"')
+		str = get_str1(cmd, i);
+	else if (cmd[*i] == '>' || cmd[*i] == '<')
+		str = get_str2(cmd, i);
+	else
+		str = get_command(cmd, i);
+	return (str);
+}
+
 t_cmd	*ft_lstnew(char *cmd)
 {
-	t_cmd	*l;
-	t_substruct *new;
-	char	*str;
-	int		i;
+	t_cmd		*l;
+	t_substruct	*new;
+	char		*str;
+	int			i;
 
 	str = NULL;
 	l = malloc(sizeof(t_cmd));
@@ -139,12 +152,7 @@ t_cmd	*ft_lstnew(char *cmd)
 	i = 0;
 	while (cmd[i])
 	{
-		if (cmd[i] == '\'' || cmd[i] == '"')
-			str = get_str1(cmd, &i);
-		else if (cmd[i] == '>' || cmd[i] == '<')
-			str = get_str2(cmd, &i);
-		else
-			str = get_command(cmd, &i);
+		str = separt_cond(cmd, &i);
 		if (str)
 		{
 			new = n_lstnew(str);
