@@ -6,20 +6,19 @@
 /*   By: nait-ali <nait-ali@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/03 18:32:22 by nait-ali          #+#    #+#             */
-/*   Updated: 2023/09/08 14:53:46 by nait-ali         ###   ########.fr       */
+/*   Updated: 2023/09/18 03:01:10 by nait-ali         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "minishell.h"
+#include "minishell.h"
 
 int	check_new_line(char *str)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	if (!str)
 		return (1);
-
 	if (str[i] == '-' && str[i + 1])
 	{
 		i++;
@@ -31,29 +30,41 @@ int	check_new_line(char *str)
 	return (1);
 }
 
-void	ft_echo(t_cmd *ls)
+void	help_ftecho(t_cmd *ls, char **option, t_substruct *cmd, int i)
 {
-	int	var;
-	t_substruct *cmd;
-
-	var = 0;
-
-	cmd = ls->s_substruct->next; 
-    while (cmd && check_new_line(cmd->data) && ls->s_substruct->next)
+	while (cmd && option[i] && (option[i][0] != '<' && option[i][0] != '>'))
 	{
-		var = 1;
-       	cmd = cmd->next;
-	}
-	while (cmd && (cmd->data[0] != '<' && cmd->data[0] != '>'))
-	{
-	// printf("   %s------>:\n", cmd->data);
-		ft_putstr_fd(cmd->data, ls->fileout);
+		ft_putstr_fd(option[i], ls->fileout);
 		cmd = cmd->next;
+		i++;
 		if (cmd)
 			write(ls->fileout, " ", 1);
 	}
+}
 
+void	ft_echo(t_cmd *ls, char **option)
+{
+	int			var;
+	t_substruct	*cmd;
+	int			i;
+
+	var = 0;
+	cmd = ls->s_substruct->next;
+	i = 1;
+	while (option[i] && cmd && \
+	check_new_line(option[i]) && ls->s_substruct->next)
+	{
+		if (ft_strlen(cmd->data))
+		{
+			var = 1;
+			cmd = cmd->next;
+			i++;
+		}
+		else
+			break ;
+	}
+	help_ftecho(ls, option, cmd, i);
 	if (!var)
 		write(ls->fileout, "\n", 1);
-	an.exit_status = 0;
+	g_an.exit_status = 0;
 }

@@ -6,104 +6,88 @@
 /*   By: nait-ali <nait-ali@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/06 02:48:32 by araiteb           #+#    #+#             */
-/*   Updated: 2023/09/08 15:31:23 by nait-ali         ###   ########.fr       */
+/*   Updated: 2023/09/18 22:59:14 by nait-ali         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	herd_rd_in(t_cmd *ls, t_substruct **cmd)
+void	help_herd_rd_in(t_substruct **cmd, t_cmd *ls)
 {
+	char	*new;
+
+	if ((*cmd)->next)
+		(*cmd) = (*cmd)->next;
+	new = subc_quots((*cmd)->data);
+	ls->filein = here_doc("tmp", new);
+	ls->filein = open("tmp", O_RDONLY, 0644);
+	free(new);
+}
+
+int	herd_rd_in(t_cmd *ls, t_substruct **cmd, char *rdprev)
+{
+	char	*new;
+
 	if ((*cmd)->type == heredoc)
-	{
-		// printf (" ---------->  dekhlat hna \n");
-		// signal(SIGINT,sigint_herdoc);
-		
-		if((*cmd)->next)
-			(*cmd) = (*cmd)->next;
-		here_doc("/tmp/an", (*cmd)->data);
-		ls->filein = open("tmp", O_RDONLY, 0644);
-	}
+		help_herd_rd_in(cmd, ls);
 	else
 	{
-		if(access((*cmd)->next->data , F_OK) == -1)
-		{
-			write(2, "minishell : ",13);
-			write(2, (*cmd)->next->data , ft_strlen((*cmd)->next->data));
-			write(2, ": No such file or directory\n", 29);
-			an.exit_status = 1;
-			return(0);
-		}
+		if (rdprev)
+			new = ft_strdup(rdprev);
 		else
-			ls->filein = open((*cmd)->next->data, O_RDONLY, 0644);
-	}
-	return(1);
-}
-
-int	get_rd(t_substruct **cmd, t_cmd *ls, int **fds)
-{
-	if ((*cmd)->type == heredoc || (*cmd)->type == rd_input)
-	{
-		// printf(" dekhlat hna 1 :\n");
-		if(!herd_rd_in(ls, cmd) || an.flag_herdoc == 1)
-			return(0);
-	}
-	else if (ls && ls->prev) //ls  | cat "piping"
-		ls->filein = fds[ls->i - 1][0];
-	if (((*cmd) && (*cmd)->type == rd_output)
-		|| ((*cmd) && (*cmd)->type == rd_output_append))
-	{
-		if ((*cmd)->type == rd_output)
-		{
-			ls->fileout = ft_check_fils((*cmd)->next->data,
-					(O_RDWR | O_CREAT | O_TRUNC), 0644);//ls > file
-		}
+			new = subc_quots((*cmd)->next->data);
+		if (access(new, F_OK) == -1)
+			return (message_error("minishell : ", new, \
+			": No such file or directory\n"), g_an.exit_status = 1, 0);
 		else
 		{
-			ls->fileout = ft_check_fils((*cmd)->next->data,
-					(O_RDWR | O_CREAT | O_APPEND), 0644);
+			ls->filein = open(new, O_RDONLY, 0644);
+			if (ls->filein == -1)
+				return (perror("open"), 0);
 		}
-		(*cmd) = (*cmd)->next;
+		ft_free_str(new);
 	}
-	if (ls && ls->next)
-	{
-		ls->fileout = fds[ls->i][1]; //piping "ls | cat"===> ls write in fd[1](cat)
-	}
-	return(1);
+	return (1);
 }
 
-void	ft_close(t_cmd *ls)
+char	*getlastcmd(t_cmd *cmd)
 {
-	close (ls->filein);
-	close (ls->fileout);
+	t_cmd		*cm;
+	t_substruct	*subs;
+
+	cm = cmd;
+	if (cm)
+	{
+		subs = cm->s_substruct;
+		while (subs->next)
+			subs = subs->next;
+		if (subs->prev && (subs->prev->type == rd_output || \
+		(subs->prev->prev && subs->prev->type == rd_output \
+		&& subs->prev->prev->type == rd_output)))
+			return (subs->data);
+	}
+	return (NULL);
 }
 
-void	ft_free_matrix(int **str, int size)
+void	help_get_rd(t_substruct **cmd, char *new, t_cmd *ls, int **fds)
 {
-	int	i;
-
-	i = 0;
-	while (i < size)
+	close(fds[ls->i][1]);
+	new = subc_quots((*cmd)->next->data);
+	if ((*cmd)->type == rd_output)
 	{
-		free (str[i]);
-		i++;
+		ls->fileout = ft_check_fils(new,
+				(O_RDWR | O_CREAT | O_TRUNC), 0644);
 	}
-	free (str);
+	else
+		ls->fileout = ft_check_fils(new,
+				(O_RDWR | O_CREAT | O_APPEND), 0644);
 }
 
-void	ft_creat_pipe(int size, int **fds)
+int	help_get_rd2(t_cmd *ls, t_substruct **cmd, char *rdprev, int **fds)
 {
-	int	i;
-
-	i = 0;
-	while (i < size)
-	{
-		fds[i] = malloc(sizeof(int) * 2);
-		if (pipe(fds[i]) == -1)
-		{
-			write(2, "error piping\n", 14);
-			an.exit_status = 1;
-		}
-		i++;
-	}
+	if (ls->i > 0 && fds[ls->i - 1][0])
+		close(fds[ls->i - 1][0]);
+	if (!herd_rd_in(ls, cmd, rdprev) || g_an.flag_herdoc == 1)
+		return (g_an.exit_status = 1, 0);
+	return (1);
 }

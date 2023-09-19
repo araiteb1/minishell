@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   les_outiles.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: nait-ali <nait-ali@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/09/18 01:22:06 by nait-ali          #+#    #+#             */
+/*   Updated: 2023/09/18 01:22:07 by nait-ali         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 char	*ft_strchr(const char *s, int c)
@@ -16,16 +28,23 @@ char	*ft_strchr(const char *s, int c)
 	return ((char *)ch);
 }
 
-int	ft_atoi(const char *str)
+int	message_erreur(char *str)
 {
-	long long	res;
-	long long	n;
-	int			sign;
+	ft_putstr_fd("minisell : exit: ", 2);
+	ft_putstr_fd(str, 2);
+	ft_putstr_fd(": numeric argument required\n", 2);
+	g_an.exit_status = 255;
+	return (g_an.exit_status);
+}
+
+int	ft_atoi(char *str)
+{
+	unsigned long long	res;
+	int					n;
+	int					sign;
 
 	res = 0;
 	sign = 1;
-	// while (*str == 32 || (*str >= 9 && *str <= 13))
-	// 	str++;
 	if (*str == '-' || *str == '+')
 	{
 		if (*str == '-')
@@ -36,12 +55,12 @@ int	ft_atoi(const char *str)
 	{
 		n = res;
 		res = res * 10 + (*str - 48);
-		if (n != res / 10 && sign == 1)
-			return (-1);
-		else if (n != res / 10 && sign == -1)
-			return (0);
+		if ((res > 9223372036854775807U && sign == 1) \
+		|| (sign == -1 && res > 9223372036854775808U))
+			return (message_erreur(str));
 		str++;
 	}
+	g_an.exit_status = res * sign;
 	return (res * sign);
 }
 

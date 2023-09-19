@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   char_size.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: nait-ali <nait-ali@student.42.fr>          +#+  +:+       +#+        */
+/*   By: araiteb <araiteb@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/19 04:07:40 by araiteb           #+#    #+#             */
-/*   Updated: 2023/09/05 23:32:47 by nait-ali         ###   ########.fr       */
+/*   Updated: 2023/09/17 04:17:28 by araiteb          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,14 +37,11 @@ char	**__resize(char **Array, char *new)
 	while (i < len)
 	{
 		tmp[i] = strdup(Array[i]);
-		// printf("--------->%s \n", tmp[i]);
 		i++;
 	}
 	tmp[len] = strdup(new);
 	tmp[len + 1] = NULL;
-	if(Array)
-		free (Array);
-	// printf("\n--> `%s` <--\n", tmp[i]);
+	ft_free(Array);
 	return (tmp);
 }
 

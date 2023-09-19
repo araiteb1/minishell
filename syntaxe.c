@@ -6,7 +6,7 @@
 /*   By: nait-ali <nait-ali@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/15 21:27:51 by araiteb           #+#    #+#             */
-/*   Updated: 2023/09/08 21:32:48 by nait-ali         ###   ########.fr       */
+/*   Updated: 2023/09/19 02:15:17 by nait-ali         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,47 +29,41 @@ char	*get_redirection(char *cmd, int *start)
 	return (ret);
 }
 
-char	*get_quotes(char *cmd, int *start, int type)
+int	ft_isalpha(int c)
 {
-	char	*quot;
-	int		size;
-	int		i;
-	char	quote;
-
-	if (type == DQUOTES)
-		quote = '"';
-	else
-		quote = '\'';
-	i = *start;
-	size = 0;
-	if(cmd[*start + 1]&& cmd[*start + 1] == type)
-		return(NULL);
-	while (cmd[*start] && cmd[*start] != quote)
-	{
-		size++;
-		(*start)++;
-	}
-	if(size == 0)
-		return(NULL);
-	quot = ft_substr(cmd, i, size);
-	return (quot);
+	if (!(c >= 97 && c <= 122) && !(c >= 65 && c <= 90))
+		return (0);
+	return (1);
 }
 
-char	* get_command(char *cmd, int *start)
+char	*get_command(char *cmd, int *start)
 {
 	char	*ret;
 	int		i;
 	int		size;
+	char	*rest;
+	char	*tmp;
 
 	i = *start;
 	size = 0;
+	rest = NULL;
+	ret = NULL;
 	while (cmd[*start] && cmd[*start] != ' '
-		&& cmd[*start] != '>' && cmd[*start] != '<')
+		&& cmd[*start] != '>' && cmd[*start] != '<'
+		&& cmd[*start] != DQUOTES && cmd[*start] != SQUOTE)
 	{
 		size++;
 		(*start)++;
 	}
-	ret = ft_substr(cmd, i, size);
+	tmp = ft_substr(cmd, i, size);
+	if (cmd[*start] == DQUOTES || cmd[*start] == SQUOTE)
+		rest = get_str1(cmd, start);
+	if (rest)
+		ret = ft_strjoin(tmp, rest);
+	else
+		return (tmp);
+	ft_free_str(rest);
+	ft_free_str(tmp);
 	return (ret);
 }
 
@@ -89,24 +83,53 @@ int	chack_status(t_substruct *tmps, t_cmd *tmp)
 		return (0);
 }
 
+int 	check_rdin_out_err(char *str)
+{
+		int i = 0;
+		while(str[i])
+		{
+			if(str[i] == '<' && str[i + 1] == '>')
+			{
+				write(2, "minishell: syntax error near unexpected token `newline'\n",57);
+				return(1);
+			}
+			i++;
+		}
+		return(0);
+}
+
 int	syntaxe_error(t_cmd *ls)
 {
 	t_cmd		*tmp;
 	t_substruct	*tmps;
+	int flag = 0;
 
 	tmp = ls;
 	while (tmp)
 	{
+		if (!ft_strcmp(tmp->data, " "))
+		{
+			ft_putstr_fd("minishell:  syntax error near unexpected token `|'\n", 2);
+			return (0);
+		}
 		tmps = tmp->s_substruct;
 		while (tmps)
 		{
 			if (chack_status(tmps, tmp) == 1)
 			{
-				an.exit_status = 258;
-				write (2, "minishell: syntax error near", 29);
+				g_an.exit_status = 258;
+				write (2, "minishell: syntax error near ", 30);
 				write(2, "unexpected token `newline'\n", 28);
 				return (0);
 			}
+			tmps = tmps->next;
+		}
+		tmps = tmp->s_substruct;
+		while (tmps)
+		{
+			flag = check_rdin_out_err(tmps->data);
+			if (flag == 1)
+				return (0);
 			tmps = tmps->next;
 		}
 		tmp = tmp->next;
